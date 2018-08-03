@@ -1,0 +1,16 @@
+<tr id="{{id}}">
+    <td>{{firstName}}</td>
+    <td>{{lastName}}</td>
+    <td>{{email}}</td>
+    <td>{{meetingsAttended}}</td>
+    {{#serviceHours}}
+        <td>{{individual}}</td>
+        <td>{{group}}</td>
+    {{/serviceHours}}
+    <td>
+        <a href='/editMember.php?memberID={{id}}&clubID={{clubID}}' class='btn btn-primary btn-sm'><i class='fa fa-fw fa-pencil'></i></a>
+        {{#serviceHours}}
+            <a href='/memberService.php?memberID={{id}}&clubID={{clubID}}' class="btn btn-secondary btn-sm"><i class="fa fa-fw fa-wrench"></i></a>
+        {{/serviceHours}}
+    </td>
+</tr>

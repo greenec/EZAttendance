@@ -1,0 +1,60 @@
+body {
+	padding-bottom: 25px;
+}
+
+.navbar .navbar-brand img {
+	margin-top: -15px;
+	height: 50px;
+	width: 150px;
+}
+
+.header-inline {
+	display: inline;
+	vertical-align: top;
+	margin-right: 25px;
+}
+
+.pointer {
+	cursor: pointer;
+}
+
+/* darker gray stripes */
+.table-striped > tbody > tr:nth-of-type(2n + 1) {
+	background-color: #efefef;
+}
+
+.table-responsive {
+	border: none;
+}
+
+.table-responsive td {
+	white-space: nowrap;
+}
+
+/* jQuery Autocomplete Styles */
+.autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
+.autocomplete-suggestion { padding: 4px 10px; white-space: nowrap; overflow: hidden; font-size: 16px; }
+.autocomplete-selected { background: #F0F0F0; }
+.autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
+.autocomplete-group { padding: 2px 5px; }
+.autocomplete-group strong { display: block; border-bottom: 1px solid #000; }
+
+@media only screen and (max-width: 767px) {
+	.pad-input {
+		margin-bottom: 15px;
+	}
+
+	.table-responsive .dataTables_wrapper {
+		margin-bottom: 25px;
+	}
+}
+
+/* Spacing for buttons that aren't in a table */
+:not(td) .btn {
+	margin-top: 10px;
+}
+
+/* Spacing for cards (formerly panels in Bootstrap 3) that run vertically */
+.card-panel-group .card {
+	margin-bottom: 10px;
+}

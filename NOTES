@@ -1,0 +1,17 @@
+TODO
+
+General:
+* Code cleanup
+* XSS Prevention
+* Promoting Member to Officer
+* Permission to view club
+
+Admin:
+* Create and manage clubs
+* Manage other admins
+
+Clubs:
+* Create club handler
+
+Queries:
+* Be aware of graduating year when querying

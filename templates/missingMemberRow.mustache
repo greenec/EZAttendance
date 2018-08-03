@@ -1,0 +1,12 @@
+<tr id="{{ id }}">
+    <td>{{ firstName }}</td>
+    <td>{{ lastName }}</td>
+    <td>{{ email }}</td>
+    <td>{{ graduatingYear }}</td>
+    {{#isClass}}
+        <td>
+            <button class="btn btn-success btn-sm signinMember"><i class="fa fa-fw fa-check"></i></button>
+            <button class="btn btn-danger btn-sm removeMember"><i class="fa fa-fw fa-trash"></i></button>
+        </td>
+    {{/isClass}}
+</tr>
