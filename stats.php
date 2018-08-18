@@ -3,7 +3,7 @@
 // NOTE: these should be changed to suit your project
 // exclude web server configs, frameworks/libraries, etc.
 $excludeFiles = array('stats.php', 'NOTES', 'users.php', 'websockets.php', 'chart.js', 'chartUtils.js',
-    'XLSXWriter.php', 'XLSXWriter_BuffererWriter.php', 'composer.lock', 'composer.json');
+    'XLSXWriter.php', 'XLSXWriter_BuffererWriter.php', 'composer.lock', 'composer.json', 'rawline.css');
 // NOTE: ALWAYS keep '.' and '..' in this array
 // exclude directories such as fonts and images
 $excludeDir = array('.', '..', 'fonts', 'img', 'vendor');

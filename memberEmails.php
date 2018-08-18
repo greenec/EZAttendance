@@ -42,8 +42,6 @@ foreach($graduatingYears as $grade => $year) {
     }
 }
 
-// TODO: calculate width for each column
-
 $writer = new XLSXWriter();
 $writer->writeSheet($rows,'Sheet1', $header);
 echo $writer->writeToString();

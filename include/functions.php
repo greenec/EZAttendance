@@ -95,28 +95,6 @@ function getClubFromMeetingID(mysqli $conn, $meetingID) {
     return false;
 }
 
-function getServiceOpportunities(mysqli $conn,$clubID) {
-	$out = [];
-	$stmt = $conn->prepare(
-		"SELECT so.serviceOpportunityID, so.serviceName, so.serviceType, so.serviceDescription, SUM(se.hours), so.contactName, so.contactPhone
-			FROM serviceEntries AS se
-			JOIN serviceOpportunities AS so
-				ON se.serviceOpportunityID = so.serviceOpportunityID
-			JOIN clubMembers AS cm
-				ON se.clubMemberID = cm.clubMemberID
-			WHERE cm.clubID = ?
-			GROUP BY se.serviceOpportunityID");
-	$stmt->bind_param('i', $clubID);
-	$stmt->execute();
-	$stmt->store_result();
-	$stmt->bind_result($id, $name, $serviceType, $description, $hours, $contactName, $contactPhone);
-	while($stmt->fetch()) {
-		$out[] = new Service($id, $name, $description, $contactName, $contactPhone, ucfirst($serviceType), null, $hours);
-	}
-	$stmt->close();
-	return $out;
-}
-
 function getServiceOpportunity(mysqli $conn, $opportunityID) {
     $out = false;
     $stmt = $conn->prepare(
@@ -360,8 +338,7 @@ function getClubsForOfficer(mysqli $conn, $memberID, $graduatingYears) {
 
 function getAdmins(mysqli $conn, $graduatingYears) {
 	$admins = array();
-	$stmt = $conn->prepare("SELECT memberID, firstName, lastName, email, graduating FROM members WHERE isAdmin = TRUE AND graduating >= ?");
-	$stmt->bind_param('i', $graduatingYears['senior']);
+	$stmt = $conn->prepare("SELECT memberID, firstName, lastName, email, graduating FROM members WHERE isAdmin = TRUE");
 	$stmt->execute();
 	$stmt->store_result();
 	$stmt->bind_result($id, $firstName, $lastName, $email, $graduating);
@@ -414,6 +391,39 @@ function getClubMembers(mysqli $conn, $clubID, $graduatingYears, $trackService =
 		$members[array_search($graduating, $graduatingYears)][] = new Member($id, $firstName, $lastName, $email, $graduating, null, $clubMemberID, $meetingsAttended, $serviceHours);
 	}
 	return $members;
+}
+
+// TODO: account for service date in this query
+function getServiceOpportunities(mysqli $conn, $clubID) {
+	$out = [];
+
+	$oldQuery = "SELECT so.serviceOpportunityID, so.serviceName, so.serviceType, so.serviceDescription, SUM(se.hours), so.contactName, so.contactPhone
+		FROM serviceEntries AS se
+		JOIN serviceOpportunities AS so
+			ON se.serviceOpportunityID = so.serviceOpportunityID
+		JOIN clubMembers AS cm
+			ON se.clubMemberID = cm.clubMemberID
+		WHERE cm.clubID = ?
+		GROUP BY se.serviceOpportunityID";
+
+	$stmt = $conn->prepare(
+		"SELECT so.serviceOpportunityID, so.serviceName, so.serviceType, so.serviceDescription, IFNULL(se.hours, 0), so.contactName, so.contactPhone
+			FROM serviceOpportunities AS so
+			LEFT JOIN (
+			SELECT se.serviceOpportunityID, SUM(se.hours) AS hours
+					FROM serviceEntries AS se
+					JOIN clubMembers AS cm ON se.clubMemberID = cm.clubMemberID
+					WHERE cm.clubID = ?
+					GROUP BY se.serviceOpportunityID) se ON (so.serviceOpportunityID = se.serviceOpportunityID)");
+	$stmt->bind_param('i', $clubID);
+	$stmt->execute();
+	$stmt->store_result();
+	$stmt->bind_result($id, $name, $serviceType, $description, $hours, $contactName, $contactPhone);
+	while($stmt->fetch()) {
+		$out[] = new Service($id, $name, $description, $contactName, $contactPhone, ucfirst($serviceType), null, $hours);
+	}
+	$stmt->close();
+	return $out;
 }
 
 function getServiceOpportunitiesForMember(mysqli $conn, $clubMemberID) {
@@ -1009,6 +1019,10 @@ function cleanAdviserEmail($email) {
     return explode("@", trim(strtolower($email)))[0] . '@eastonsd.org';
 }
 
+function cleanAdminEmail($email) {
+	return explode("@", trim(strtolower($email)))[0];
+}
+
 function cleanEmailForSearch($query) {
     // take everything before the '@'
     $query = explode("@", trim(strtolower($query)))[0];
@@ -1034,6 +1048,21 @@ function formatServiceDateSQL($str) {
         $date = strtotime($str . ' -1 year');
     }
     return date('Y-m-d H:i:s', $date);
+}
+
+function formatPhoneNumber($str) {
+	$num = preg_replace("/[^0-9]/", "", $str );
+
+	// if the phone number contains a leading 1, remove it
+	if(strlen($num) == 11 && substr($num, 0, 1) == "1") {
+		$num = substr($num, 1);
+	}
+
+	if(strlen($num) == 10) {
+		return substr($num, 0, 3) . '-' . substr($num, 3, 3) . '-' . substr($num, 6);
+	}
+
+	return $str;
 }
 
 function getTemplate($tpl) {

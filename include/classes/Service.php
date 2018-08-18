@@ -6,7 +6,7 @@ class Service {
         $this->name = e($name);
         $this->description = $description;
         $this->contactName = e($contactName);
-        $this->contactPhone = e($contactPhone);
+        $this->contactPhone = formatPhoneNumber($contactPhone);
         $this->type = $type;
         $this->entries = $entries;
         $this->hours = $hours;

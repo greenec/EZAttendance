@@ -37,7 +37,7 @@ require 'include/header.php';
                     </a>
                     <br /><br />
                     <h1 class="text-center"><?php echo $clubInfo->name; ?></h1>
-
+					<br />
 					<div class="text-center text-md-left">
 						<a class='btn btn-secondary' href='manageMembers.php?clubID=<?php echo $clubID; ?>'>
 							<i class='fa fa-fw fa-eye'></i> View All Club Members

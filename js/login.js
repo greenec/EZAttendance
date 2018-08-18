@@ -6,6 +6,7 @@ $(document).ready(function() {
 	$role.on('change', function() {
 		var role = $role.val();
 
+		// TODO: admin email domain display
 		if(role === 'officer' || role === 'admin') {
 			$('#email-extension').text('@roverkids.org');
 		} else if(role === 'teacher') {

@@ -216,6 +216,7 @@ require 'include/header.php';
                                                     foreach ($graduatingYears as $graduatingYear) {
                                                         echo '<option value="' . $graduatingYear . '">' . $graduatingYear . '</option>';
                                                     } ?>
+													<option value="0">Teacher</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -240,13 +241,12 @@ require 'include/header.php';
                             <thead>
                             <tr>
                                 <th>Name</th>
-                                <th>Graduating</th>
+                                <th>Email</th>
                                 <th>Actions</th>
                             </tr>
                             </thead>
                             <tbody>
                             <?php
-
                             $admins = getAdmins($conn, $graduatingYears);
                             $adminRowTemplate = $mustache->loadTemplate('adminRow');
 

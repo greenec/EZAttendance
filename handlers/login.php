@@ -13,11 +13,13 @@ if(isset($_POST['email']) && isset($_POST['password']) && isset($_POST['role']))
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    if($role == 'teacher') {
-        $email = cleanAdviserEmail($email);
-    } else {
-        $email = cleanEmail($email);
-    }
+	if ($role == 'officer') {
+		$email = cleanEmail($email);
+	} else if ($role == 'teacher') {
+		$email = cleanAdviserEmail($email);
+	} else if ($role == 'admin') {
+		$email = cleanAdminEmail($email) . '%';
+	}
 } else {
 	header('Location: ../login.php');
 	die();
@@ -70,7 +72,7 @@ function validate($role) {
 
 function loginQuery(mysqli $conn, $role, $email, $graduatingYears) {
     if($role == 'admin') {
-        $stmt = $conn->prepare("SELECT password, memberID FROM members WHERE email = ? AND isAdmin");
+        $stmt = $conn->prepare("SELECT password, memberID FROM members WHERE email LIKE ? AND isAdmin");
         $stmt->bind_param('s', $email);
     } else if($role == 'teacher') {
         $stmt = $conn->prepare("SELECT password, memberID FROM members WHERE email = ? AND graduating = 0");

@@ -139,6 +139,9 @@ $(document).ready(function() {
     email.autocomplete({
         // noCache: true,
         serviceUrl: '/handlers/autofill.php',
+    		params: {
+    			'type': 'admin'
+    		},
         type: 'POST',
         onSelect: function (suggestion) {
             var data = suggestion.data;

@@ -40,16 +40,25 @@ $email = isset($_POST['email']) ? $_POST['email'] : '';
 $graduating = isset($_POST['graduating']) ? $_POST['graduating'] : '';
 
 if($action == 'add') {
-    $email = cleanEmail($email);
+	if($graduating == 0) {
+		$email = cleanAdviserEmail($email);
+	} else {
+		$email = cleanEmail($email);
+	}
 }
 
 // initialize JSON variables
-$errors = validate($action, $firstName, $lastName, $email, $graduating);
+$errors = validate($action, $firstName, $lastName, $email);
 $data = array();
 
 if(empty($errors)) {
     if($action == 'add') {
-        $memberID = addMember($conn, $graudatingYears, $firstName, $lastName, $email, $graduating);
+    	if($graduating == 0) {
+    		$memberID = addTeacher($conn, $firstName, $lastName, $email);
+		} else {
+			$memberID = addMember($conn, $graudatingYears, $firstName, $lastName, $email, $graduating);
+		}
+
         addAdmin($conn, $memberID);
         $data['id'] = $memberID;
         $data['firstName'] = $firstName;
@@ -69,7 +78,7 @@ if(empty($errors)) {
 
 echo json_encode($data);
 
-function validate($action, $firstName, $lastName, $email, $graduating) {
+function validate($action, $firstName, $lastName, $email) {
     $errors = array();
 
     if($action == 'add') {
@@ -85,15 +94,11 @@ function validate($action, $firstName, $lastName, $email, $graduating) {
         if (strlen($lastName) > 50) {
             $errors["lastName"] = "Last name cannot exceed 50 characters.";
         }
-        if (empty($email) || $email == '@roverkids.org') {
+        if (empty($email) || $email == '@roverkids.org' || $email == '@eastonsd.org') {
             $errors["email"] = "Please enter an email.";
         }
         if (strlen($email) > 100) {
             $errors["email"] = "Email cannot exceed 50 characters.";
-        }
-        // TODO: remove graduating year validation on admin creation and updates
-        if (!in_array($graduating, calcGraduatingYears())) {
-            $errors["graduating"] = "Please select a valid graduatingYear.";
         }
     }
 

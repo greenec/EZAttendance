@@ -47,6 +47,9 @@ $data = array();
 if(empty($errors)) {
     if($action == 'addOpportunity') {
         $opp = getServiceOpportunityByName($conn, $serviceOpportunity['serviceName']);
+
+	// TODO: update opportunity info with POST data
+
         if(!$opp) {
             $opp = createServiceOpportunity($conn, $serviceOpportunity);
         }

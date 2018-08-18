@@ -26,6 +26,8 @@ $type = isset($_POST['type']) ? $_POST['type'] : '';
 $time = microtime(true);
 if($type == 'teacher') {
     $suggestions = searchAdvisers($conn, $query);
+} else if($type == 'admin') {
+	$suggestions = searchForAdmins($conn, $query, $graduatingYears);
 } else {
     $suggestions = searchMembers($conn, $query, $graduatingYears);
 }
@@ -41,7 +43,7 @@ function searchMembers(mysqli $conn, $query, $graduatingYears) {
     $stmt->bind_param('si', $query, $graduatingYears['senior']);
     $stmt->execute();
     $stmt->store_result();
-    $stmt->bind_result($firstName, $lastName, $email, $graduatingYear);
+    $stmt->bind_result($firstName, $lastName, $email, $graduating);
     while($stmt->fetch()) {
     	$email = str_replace('@roverkids.org', '', $email);
 
@@ -51,7 +53,7 @@ function searchMembers(mysqli $conn, $query, $graduatingYears) {
                 'firstName' => $firstName,
                 'lastName' => $lastName,
                 'email' => $email,
-                'graduatingYear' => $graduatingYear
+                'graduatingYear' => $graduating
             ]
         ];
     }
@@ -82,4 +84,30 @@ function searchAdvisers(mysqli $conn, $query) {
     }
 
     return $suggestions;
+}
+
+function searchForAdmins(mysqli $conn, $query, $graduatingYears) {
+	$query = cleanEmailForSearch($query);
+	$suggestions = [];
+
+	$stmt = $conn->prepare('SELECT firstName, lastName, email, graduating FROM members WHERE email LIKE ? AND (graduating = 0 OR graduating >= ?) LIMIT 25');
+	$stmt->bind_param('si', $query, $graduatingYears['senior']);
+	$stmt->execute();
+	$stmt->store_result();
+	$stmt->bind_result($firstName, $lastName, $email, $graduating);
+	while($stmt->fetch()) {
+		$email = str_replace(['@roverkids.org', '@eastonsd.org'], '', $email);
+
+		$suggestions[] = [
+			'value' => "$email ($firstName $lastName)",
+			'data' => [
+				'firstName' => $firstName,
+				'lastName' => $lastName,
+				'email' => $email,
+				'graduatingYear' => $graduating
+			]
+		];
+	}
+
+	return $suggestions;
 }
