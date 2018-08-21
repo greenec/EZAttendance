@@ -27,7 +27,7 @@ $time = microtime(true);
 if($type == 'teacher') {
     $suggestions = searchAdvisers($conn, $query);
 } else if($type == 'admin') {
-	$suggestions = searchForAdmins($conn, $query, $graduatingYears);
+	$suggestions = searchAdmins($conn, $query);
 } else {
     $suggestions = searchMembers($conn, $query, $graduatingYears);
 }
@@ -86,12 +86,12 @@ function searchAdvisers(mysqli $conn, $query) {
     return $suggestions;
 }
 
-function searchForAdmins(mysqli $conn, $query, $graduatingYears) {
+function searchAdmins(mysqli $conn, $query) {
 	$query = cleanEmailForSearch($query);
 	$suggestions = [];
 
-	$stmt = $conn->prepare('SELECT firstName, lastName, email, graduating FROM members WHERE email LIKE ? AND (graduating = 0 OR graduating >= ?) LIMIT 25');
-	$stmt->bind_param('si', $query, $graduatingYears['senior']);
+	$stmt = $conn->prepare('SELECT firstName, lastName, email, graduating FROM members WHERE email LIKE ? LIMIT 25');
+	$stmt->bind_param('s', $query);
 	$stmt->execute();
 	$stmt->store_result();
 	$stmt->bind_result($firstName, $lastName, $email, $graduating);
