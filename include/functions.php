@@ -141,6 +141,19 @@ function getGuidMeta(mysqli $conn, $guid) {
     return $out;
 }
 
+function getOrganizationInfo(mysqli $conn, $organizationId) {
+    $out = false;
+    $stmt = $conn->prepare('SELECT organizationName FROM organizations WHERE organizationID = ?');
+    $stmt->bind_param('i', $organizationId);
+    $stmt->execute();
+    $stmt->store_result();
+    $stmt->bind_result($organizationName);
+    while($stmt->fetch()) {
+        $out = new Organization($organizationId, $organizationName);
+    }
+    return $out;
+}
+
 
 
 // retrieve IDs (integers)
@@ -281,7 +294,7 @@ function getMeetingsMemberMissed(mysqli $conn, $memberID, $clubID) {
 	return $meetings;
 }
 
-function getClubs(mysqli $conn, $graduatingYears) {
+function getClubs(mysqli $conn, $organizationId, $graduatingYears) {
 	$clubs = array();
 	$stmt = $conn->prepare(
 		"SELECT c.clubID, c.clubName, c.abbreviation, c.trackService, IFNULL(cm.clubMemberCount, 0) 
