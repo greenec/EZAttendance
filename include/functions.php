@@ -1044,7 +1044,7 @@ function calcGraduatingYears() {
     }
 }
 
-function getOrganizationTypes() {
+function getClubTypes() {
     return ['Club', 'Class'];
 }
 

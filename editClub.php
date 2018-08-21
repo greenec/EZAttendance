@@ -23,7 +23,7 @@ $abbreviation = $clubInfo->abbreviation;
 $trackService = $clubInfo->trackService;
 $organizationType = $clubInfo->type;
 
-$organizationTypes = getOrganizationTypes();
+$clubTypes = getClubTypes();
 
 $title = 'Edit Club Info';
 
@@ -68,7 +68,7 @@ require 'include/header.php';
                                 <select class="form-control" id="organizationType" name='organizationType'>
                                     <option value="">Please select an organization type</option>
                                     <?php
-                                    foreach ($organizationTypes as $type) {
+                                    foreach ($clubTypes as $type) {
                                         echo "<option value='$type' " . ($type == $organizationType ? 'selected' : "") . ">$type</option>";
                                     } ?>
                                 </select>

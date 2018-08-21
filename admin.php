@@ -22,7 +22,6 @@ $lastName = $accountInfo["lastName"];
 $email = $accountInfo["email"];
 
 $graduatingYears = calcGraduatingYears();
-$organizationTypes = getOrganizationTypes();
 
 $title = 'Admin Dashboard';
 
@@ -98,7 +97,7 @@ require 'include/header.php';
                                                         name='organizationType'>
                                                     <option value="">Please select an organization type</option>
                                                     <?php
-                                                    foreach ($organizationTypes as $type) {
+                                                    foreach ($clubTypes as $type) {
                                                         echo "<option value='$type'>$type</option>";
                                                     } ?>
                                                 </select>
