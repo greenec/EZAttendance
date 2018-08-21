@@ -487,7 +487,21 @@ function getAdvisers(mysqli $conn, $clubID) {
     while($stmt->fetch()) {
         $officers[] = new Member($adviserID, $firstName, $lastName, $email);
     }
+    $stmt->close();
     return $officers;
+}
+
+function getOrganizations(mysqli $conn) {
+    $organizations = array();
+    $stmt = $conn->prepare("SELECT o.organizationID, o.organizationName FROM organizations AS o");
+    $stmt->execute();
+    $stmt->store_result();
+    $stmt->bind_result($organizationID, $organizationName);
+    while($stmt->fetch()) {
+        $organizations[] = new Organization($organizationID, $organizationName);
+    }
+    $stmt->close();
+    return $organizations;
 }
 
 
@@ -676,6 +690,15 @@ function addAdviser(mysqli $conn, $clubID, $firstName, $lastName, $email) {
     return $adviserID;
 }
 
+function createOrganization(mysqli $conn, $organizationName) {
+    $stmt = $conn->prepare("INSERT INTO organizations (organizationName) VALUES(?)");
+    $stmt->bind_param('s', $organizationName);
+    $stmt->execute();
+    $id = $stmt->insert_id;
+    $stmt->close();
+    return $id;
+}
+
 
 
 // update data in the DB
@@ -775,6 +798,13 @@ function resetMemberPassword(mysqli $conn, $memberID) {
     $stmt->close();
 }
 
+function updateOrganization(mysqli $conn, Organization $organization) {
+    $stmt = $conn->prepare('UPDATE organizations SET organizationName = ? WHERE organizationID = ?');
+    $stmt->bind_param('si', $organization->name, $organization->id);
+    $stmt->execute();
+    $stmt->close();
+}
+
 
 
 // remove data from DB
@@ -866,6 +896,13 @@ function removeMember(mysqli $conn, $memberID, $clubID) {
 function removeServiceEntry(mysqli $conn, $serviceEntryID) {
     $stmt = $conn->prepare('DELETE FROM serviceEntries WHERE serviceEntryID = ?');
     $stmt->bind_param('i', $serviceEntryID);
+    $stmt->execute();
+    $stmt->close();
+}
+
+function deleteOrganization(mysqli $conn, $organizationId) {
+    $stmt = $conn->prepare('DELETE FROM organizations WHERE organizationID = ?');
+    $stmt->bind_param('i', $organizationId);
     $stmt->execute();
     $stmt->close();
 }
