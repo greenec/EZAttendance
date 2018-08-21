@@ -88,13 +88,13 @@ require 'include/header.php';
                                                        placeholder="Club Abbreviation">
                                             </div>
                                         </div>
-                                        <div class='form-group row' id='organizationType-group'>
+                                        <div class='form-group row' id='clubType-group'>
                                             <div class='col-sm-3 control-label'>
-                                                <label for="organizationType">Organization Type:</label>
+                                                <label for="clubType">Organization Type:</label>
                                             </div>
                                             <div class='col-sm-9'>
-                                                <select class="form-control" id="organizationType"
-                                                        name='organizationType'>
+                                                <select class="form-control" id="clubType"
+                                                        name='clubType'>
                                                     <option value="">Please select an organization type</option>
                                                     <?php
                                                     foreach ($clubTypes as $type) {

@@ -8,7 +8,7 @@ $(document).ready(function() {
 			'clubID': qString('clubID'),
 			'clubName': $('input[name=clubName]').val(),
             'abbreviation': $('input[name=abbreviation]').val(),
-			'organizationType': $('#organizationType').val(),
+			'clubType': $('#clubType').val(),
 			'trackService': $('input[name=trackService]').is(':checked'),
 			'action': 'update'
 		};
@@ -27,8 +27,8 @@ $(document).ready(function() {
                 if(data.errors.abbreviation) {
                     $('#abbreviation-group').find('.form-control').addClass('is-invalid').parent().append('<div class="invalid-feedback">' + data.errors.abbreviation + '</div>')
                 }
-                if(data.errors.organizationType) {
-                    $('#organizationType-group').find('.form-control').addClass('is-invalid').parent().append('<div class="invalid-feedback">' + data.errors.organizationType + '</div>')
+                if(data.errors.clubType) {
+                    $('#clubType-group').find('.form-control').addClass('is-invalid').parent().append('<div class="invalid-feedback">' + data.errors.clubType + '</div>')
                 }
 			} else {
 				$('#clubName-group').find('.form-control').addClass('is-valid')

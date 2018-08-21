@@ -22,7 +22,7 @@ $action = isset($_POST['action']) ? $_POST['action'] : '';
 $clubID = isset($_POST['clubID']) ? $_POST['clubID'] : '';
 $clubName = isset($_POST['clubName']) ? $_POST['clubName'] : '';
 $abbreviation = isset($_POST['abbreviation']) ? $_POST['abbreviation'] : '';
-$type = isset($_POST['organizationType']) ? $_POST['organizationType'] : '';
+$type = isset($_POST['clubType']) ? $_POST['clubType'] : '';
 $trackService = isset($_POST['trackService']) ? $_POST['trackService'] == 'true' : false;
 
 $clubInfo = getClubInfo($conn, $clubID);
@@ -72,7 +72,7 @@ function validate(mysqli $conn, $clubInfo, $clubName, $abbreviation, $type, $clu
             $errors["abbreviation"] = "Club abbreviation cannot exceed 10 characters.";
         }
         if(!in_array($type, $clubTypes)) {
-            $errors['organizationType'] = 'Please select a valid organization type.';
+            $errors['clubType'] = 'Please select a valid organization type.';
         }
     }
     if($action == 'remove') {

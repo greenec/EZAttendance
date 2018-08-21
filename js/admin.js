@@ -61,7 +61,7 @@ $(document).ready(function() {
 		var formData = {
 			'clubName': clubForm.find('input[name=clubName]').val(),
             'abbreviation': clubForm.find('input[name=abbreviation]').val(),
-			'organizationType': clubForm.find('#organizationType').val(),
+			'clubType': clubForm.find('#clubType').val(),
             'trackService': clubForm.find('input[name=trackService]').is(':checked'),
 			'action': 'add'
 		};
@@ -80,8 +80,8 @@ $(document).ready(function() {
 					if(data.errors.abbreviation) {
 						$('#abbreviation-group').find('.form-control').addClass('is-invalid').parent().append('<div class="invalid-feedback">' + data.errors.abbreviation + '</div>')
 					}
-                    if(data.errors.organizationType) {
-                        $('#organizationType-group').find('.form-control').addClass('is-invalid').parent().append('<div class="invalid-feedback">' + data.errors.organizationType + '</div>')
+                    if(data.errors.clubType) {
+                        $('#clubType-group').find('.form-control').addClass('is-invalid').parent().append('<div class="invalid-feedback">' + data.errors.clubType + '</div>')
                     }
 				} else {
 					$('#clubName-group').find('.form-control').addClass('is-valid').parent().append('<div class="invalid-feedback">Club successfully created!</div>');

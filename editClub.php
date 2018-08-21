@@ -21,7 +21,7 @@ $clubInfo = getClubInfo($conn, $clubID);
 $clubName = $clubInfo->name;
 $abbreviation = $clubInfo->abbreviation;
 $trackService = $clubInfo->trackService;
-$organizationType = $clubInfo->type;
+$clubType = $clubInfo->type;
 
 $clubTypes = getClubTypes();
 
@@ -60,16 +60,16 @@ require 'include/header.php';
                                        id="clubName" name="abbreviation">
                             </div>
                         </div>
-                        <div class='form-group row' id='organizationType-group'>
+                        <div class='form-group row' id='clubType-group'>
                             <div class='col-sm-3 control-label'>
-                                <label for="organizationType">Organization Type:</label>
+                                <label for="clubType">Organization Type:</label>
                             </div>
                             <div class='col-sm-9'>
-                                <select class="form-control" id="organizationType" name='organizationType'>
+                                <select class="form-control" id="clubType" name='clubType'>
                                     <option value="">Please select an organization type</option>
                                     <?php
                                     foreach ($clubTypes as $type) {
-                                        echo "<option value='$type' " . ($type == $organizationType ? 'selected' : "") . ">$type</option>";
+                                        echo "<option value='$type' " . ($type == $clubType ? 'selected' : "") . ">$type</option>";
                                     } ?>
                                 </select>
                             </div>

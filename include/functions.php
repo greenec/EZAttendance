@@ -67,20 +67,20 @@ function getMeetingInfo(mysqli $conn, $meetingID) {
 }
 
 function getClubInfo(mysqli $conn, $clubID) {
-	$stmt = $conn->prepare('SELECT clubName, abbreviation, trackService, organizationType FROM clubs WHERE clubID = ?');
+	$stmt = $conn->prepare('SELECT clubName, abbreviation, trackService, clubType FROM clubs WHERE clubID = ?');
 	$stmt->bind_param('i', $clubID);
 	$stmt->execute();
 	$stmt->store_result();
-	$stmt->bind_result($clubName, $abbreviation, $trackService, $organizationType);
+	$stmt->bind_result($clubName, $abbreviation, $trackService, $clubType);
 	while($stmt->fetch()) {
-		return new Club($clubID, $clubName, null, $abbreviation, $trackService, $organizationType);
+		return new Club($clubID, $clubName, null, $abbreviation, $trackService, $clubType);
 	}
 	return false;
 }
 
 function getClubFromMeetingID(mysqli $conn, $meetingID) {
     $stmt = $conn->prepare(
-        'SELECT c.clubID, c.clubName, c.abbreviation, c.trackService, c.organizationType
+        'SELECT c.clubID, c.clubName, c.abbreviation, c.trackService, c.clubType
 			FROM clubs AS c
 				JOIN meetings AS m
 					ON c.clubID = m.clubID
@@ -636,7 +636,7 @@ function createServiceEntry(mysqli $conn, $ent) {
 }
 
 function createClub(mysqli $conn, $clubName, $abbreviation, $type, $trackService) {
-    $stmt = $conn->prepare("INSERT INTO clubs (clubName, abbreviation, organizationType, trackService) VALUES (?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO clubs (clubName, abbreviation, clubType, trackService) VALUES (?, ?, ?, ?)");
     $stmt->bind_param("sssi", $clubName, $abbreviation, $type, $trackService);
     $stmt->execute();
     $id = $stmt->insert_id;
@@ -710,7 +710,7 @@ function setGuidTimestamp(mysqli $conn, $guid) {
 }
 
 function updateClub(mysqli $conn, $clubID, $clubName, $abbreviation, $type, $trackService) {
-	$stmt = $conn->prepare('UPDATE clubs SET clubName = ?, abbreviation = ?, trackService = ?, organizationType = ? WHERE clubID = ?');
+	$stmt = $conn->prepare('UPDATE clubs SET clubName = ?, abbreviation = ?, trackService = ?, clubType = ? WHERE clubID = ?');
 	$stmt->bind_param('ssisi', $clubName, $abbreviation, $trackService, $type, $clubID);
 	$stmt->execute();
 	$stmt->close();
