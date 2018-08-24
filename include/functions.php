@@ -143,13 +143,13 @@ function getGuidMeta(mysqli $conn, $guid) {
 
 function getOrganizationInfo(mysqli $conn, $organizationId) {
     $out = false;
-    $stmt = $conn->prepare('SELECT organizationName FROM organizations WHERE organizationID = ?');
+    $stmt = $conn->prepare('SELECT organizationName, abbreviation, adviserDomain, studentDomain FROM organizations WHERE organizationID = ?');
     $stmt->bind_param('i', $organizationId);
     $stmt->execute();
     $stmt->store_result();
-    $stmt->bind_result($organizationName);
+    $stmt->bind_result($organizationName, $abbreviation, $adviserDomain, $studentDomain);
     while($stmt->fetch()) {
-        $out = new Organization($organizationId, $organizationName);
+        $out = new Organization($organizationId, $organizationName, $abbreviation, $adviserDomain, $studentDomain);
     }
     return $out;
 }
@@ -506,12 +506,12 @@ function getAdvisers(mysqli $conn, $clubID) {
 
 function getOrganizations(mysqli $conn) {
     $organizations = array();
-    $stmt = $conn->prepare("SELECT o.organizationID, o.organizationName FROM organizations AS o");
+    $stmt = $conn->prepare("SELECT organizationID, organizationName, abbreviation, adviserDomain, studentDomain FROM organizations");
     $stmt->execute();
     $stmt->store_result();
-    $stmt->bind_result($organizationID, $organizationName);
+    $stmt->bind_result($organizationID, $organizationName, $abbreviation, $adviserDomain, $studentDomain);
     while($stmt->fetch()) {
-        $organizations[] = new Organization($organizationID, $organizationName);
+        $organizations[] = new Organization($organizationID, $organizationName, $abbreviation, $adviserDomain, $studentDomain);
     }
     $stmt->close();
     return $organizations;
@@ -703,9 +703,9 @@ function addAdviser(mysqli $conn, $clubID, $firstName, $lastName, $email) {
     return $adviserID;
 }
 
-function createOrganization(mysqli $conn, $organizationName) {
-    $stmt = $conn->prepare("INSERT INTO organizations (organizationName) VALUES(?)");
-    $stmt->bind_param('s', $organizationName);
+function createOrganization(mysqli $conn, $organizationName, $abbreviation, $adviserDomain, $studentDomain) {
+    $stmt = $conn->prepare("INSERT INTO organizations (organizationName, abbreviation, adviserDomain, studentDomain) VALUES(?, ?, ?, ?)");
+    $stmt->bind_param('s', $organizationName, $abbreviation, $adviserDomain, $studentDomain);
     $stmt->execute();
     $id = $stmt->insert_id;
     $stmt->close();
