@@ -36,7 +36,7 @@ require 'include/header.php';
             <div class="card">
                 <div class="card-body">
                     <button class="btn btn-secondary" onclick="window.history.back();">
-                        <span class="fa fa-fw fa-arrow-left"></span> Back to Admin Dashboard
+                        <span class="fa fa-fw fa-arrow-left"></span> Back to Club
                     </button>
                     <br /><br />
                     <form class='form-horizontal'>
