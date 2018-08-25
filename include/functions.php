@@ -1040,7 +1040,7 @@ function getOfficerPieChartStats(mysqli $conn, $meetingID) {
 function calcGraduatingYears() {
     $month = date('n');
     $year = date('Y');
-    if($month > 8) {
+    if($month > 7) {
         return array(
             'senior' => $year + 1,
             'junior' => $year + 2,
