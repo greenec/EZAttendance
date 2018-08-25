@@ -17,9 +17,11 @@ if (isGuidValid($conn, $guid)) {
 
 $guidMeta = getGuidMeta($conn, $guid);
 if ($guidMeta) {
+    $clubInfo = getClubFromMeetingID($conn, $guidMeta['meetingID']);
+
     $_SESSION['meetingID'] = $guidMeta['meetingID'];
     $_SESSION['signedInBy'] = $guidMeta['officerID'];
-    $clubInfo = getClubFromMeetingID($conn, $guidMeta['meetingID']);
+    $_SESSION['organizationID'] = $clubInfo->organizationID;
 }
 
 $authenticated = isset($_SESSION['authenticated']) ? $_SESSION['authenticated'] : false;
@@ -112,8 +114,7 @@ $sock->redraw($guid);
                                     <label for="lastName">Last Name:</label>
                                 </div>
                                 <div class="col-md-7">
-                                    <input type="text" class="form-control" name="lastName"
-                                           placeholder="Enter last name">
+                                    <input type="text" class="form-control" name="lastName" placeholder="Enter last name">
                                 </div>
                             </div>
                             <div class="form-group row" id='graduatingYear-group'>
@@ -121,7 +122,7 @@ $sock->redraw($guid);
                                     <label for="graduatingYear">Graduating Year:</label>
                                 </div>
                                 <div class="col-md-7">
-                                    <select class="form-control" name="graduatingYear">
+                                    <select class="form-control" name="graduatingYear" id="graduatingYear">
                                         <option value="">Please select your Graduating Year</option>
                                         <?php
                                         foreach ($graduatingYears as $graduatingYear) {
