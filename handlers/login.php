@@ -39,6 +39,7 @@ if(empty($errors)) {
             new Session($conn);
             $_SESSION["loggedin"] = true;
             $_SESSION["id"] = $result['memberID'];
+            $_SESSION['organizationID'] = $result['organizationID'];
 
             if($role == 'admin') {
                 $_SESSION['role'] = 'Admin';
@@ -72,23 +73,24 @@ function validate($role) {
 
 function loginQuery(mysqli $conn, $role, $email, $graduatingYears) {
     if($role == 'admin') {
-        $stmt = $conn->prepare("SELECT password, memberID FROM members WHERE email LIKE ? AND isAdmin");
+        $stmt = $conn->prepare("SELECT password, memberID, organizationId FROM members WHERE email LIKE ? AND isAdmin");
         $stmt->bind_param('s', $email);
     } else if($role == 'teacher') {
-        $stmt = $conn->prepare("SELECT password, memberID FROM members WHERE email = ? AND graduating = 0");
+        $stmt = $conn->prepare("SELECT password, memberID, organizationId FROM members WHERE email = ? AND graduating = 0");
         $stmt->bind_param('s', $email);
     } else { // club officer
-        $stmt = $conn->prepare("SELECT password, memberID FROM members WHERE email = ? AND graduating >= ?");
+        $stmt = $conn->prepare("SELECT password, memberID, organizationId FROM members WHERE email = ? AND graduating >= ?");
         $stmt->bind_param('si', $email, $graduatingYears['senior']);
     }
 
     $out = [];
     $stmt->execute();
     $stmt->store_result();
-    $stmt->bind_result($password, $memberID);
+    $stmt->bind_result($password, $memberID, $organizationID);
     while($stmt->fetch()) {
         $out['password'] = $password;
         $out['memberID'] = $memberID;
+        $out['organizationID'] = $organizationID;
     }
     $stmt->close();
     return $out;
