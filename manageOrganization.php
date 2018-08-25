@@ -90,10 +90,10 @@ require 'include/header.php';
                                         </div>
                                         <div class='form-group row' id='trackService-group'>
                                             <div class='col-sm-3 control-label'>
-                                                <label>Track Service:</label>
+                                                <label for="trackService">Track Service:</label>
                                             </div>
                                             <div class='col-sm-9'>
-                                                <input type="checkbox" name='trackService'/>
+                                                <input type="checkbox" id="trackService" name='trackService'/>
                                             </div>
                                         </div>
                                         <div class="form-group row">

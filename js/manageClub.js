@@ -198,6 +198,9 @@ $(document).ready(function() {
         // noCache: true,
         serviceUrl: '/handlers/autofill.php',
         type: 'POST',
+        params: {
+            'organizationID': organizationID
+        },
         onSelect: function (suggestion) {
             var form = officerForm, data = suggestion.data;
             form.find('input[name=email]').val(data.email);
@@ -281,10 +284,11 @@ $(document).ready(function() {
     adviserForm.find('input[name=email]').autocomplete({
         // noCache: true,
         serviceUrl: '/handlers/autofill.php',
-        params: {
-            'type': 'teacher'
-        },
         type: 'POST',
+        params: {
+            'type': 'teacher',
+            'organizationID': organizationID
+        },
         onSelect: function (suggestion) {
             var form = adviserForm, data = suggestion.data;
             form.find('input[name=email]').val(data.email);

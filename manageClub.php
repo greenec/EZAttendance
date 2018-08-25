@@ -356,6 +356,7 @@ require 'include/header.php';
 
     <script>
         var adviserRowTpl = "<?php echo getTemplateStr('adviserRow'); ?>";
+        var organizationID = <?php echo $clubInfo->organizationID; ?>;
     </script>
 
     </body>
