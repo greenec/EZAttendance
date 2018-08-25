@@ -181,7 +181,8 @@ require 'include/header.php';
     <script src="/js/manageMeeting.js"></script>
 
     <script>
-        var clubID = <?php echo getClubFromMeetingID($conn, $meetingID)->id; ?>;
+        var clubID = <?php echo $clubInfo->id; ?>;
+        var organizationID = <?php echo $clubInfo->organizationID; ?>;
     </script>
 
     </body>

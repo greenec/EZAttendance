@@ -22,7 +22,6 @@ $lastName = $accountInfo["lastName"];
 $email = $accountInfo["email"];
 
 $graduatingYears = calcGraduatingYears();
-$organizationTypes = getOrganizationTypes();
 
 $title = 'Admin Dashboard';
 
@@ -60,63 +59,29 @@ require 'include/header.php';
 
             <div class="card">
                 <div class="card-body">
-                    <h2 class="header-inline">Manage Clubs</h2>
-                    <button class="btn btn-primary clubFormToggle"><span class="fa fa-fw fa-pencil"></span>
-                        <span class="hidden-xs">Create Club</span></button>
+                    <h2 class="header-inline">Manage Organizations</h2>
+                    <button class="btn btn-primary organizationFormToggle"><span class="fa fa-fw fa-pencil"></span>
+                        <span class="hidden-xs">Create Organization</span></button>
                     <br/><br/>
-                    <div class="row clubForm" style="display: none;">
+                    <div class="row organizationForm" style="display: none;">
                         <div class='col-md-12'>
                             <div class="card">
                                 <div class="card-body">
-                                    <h2>Create a Club</h2>
+                                    <h2>Create an Organization</h2>
                                     <br>
-                                    <form id="createClub" class="form-horizontal">
-                                        <div class="form-group row" id='clubName-group'>
+                                    <form id="createOrganization" class="form-horizontal">
+                                        <div class="form-group row" id='organizationName-group'>
                                             <div class="col-sm-3 control-label">
-                                                <label for="clubName">Club Name</label>
+                                                <label for="organizationName">Organization Name</label>
                                             </div>
                                             <div class="col-sm-9">
-                                                <input type="text" class="form-control" name="clubName"
-                                                       placeholder="Club Name">
-                                            </div>
-                                        </div>
-                                        <div class="form-group row" id='abbreviation-group'>
-                                            <div class="col-sm-3 control-label">
-                                                <label for="abbreviation">Club Abbreviation</label>
-                                            </div>
-                                            <div class="col-sm-9">
-                                                <input type="text" class="form-control" name="abbreviation"
-                                                       placeholder="Club Abbreviation">
-                                            </div>
-                                        </div>
-                                        <div class='form-group row' id='organizationType-group'>
-                                            <div class='col-sm-3 control-label'>
-                                                <label for="organizationType">Organization Type:</label>
-                                            </div>
-                                            <div class='col-sm-9'>
-                                                <select class="form-control" id="organizationType"
-                                                        name='organizationType'>
-                                                    <option value="">Please select an organization type</option>
-                                                    <?php
-                                                    foreach ($organizationTypes as $type) {
-                                                        echo "<option value='$type'>$type</option>";
-                                                    } ?>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class='form-group row' id='trackService-group'>
-                                            <div class='col-sm-3 control-label'>
-                                                <label>Track Service:</label>
-                                            </div>
-                                            <div class='col-sm-9'>
-                                                <input type="checkbox" name='trackService'/>
+                                                <input type="text" class="form-control" name="organizationName" placeholder="Organization Name">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <div class="offset-sm-3 col-sm-9">
-                                                <button type="submit" class="btn btn-secondary">Create Club</button>
-                                                <button class="btn btn-danger clubFormToggle"><span
-                                                            class="fa fa-fw fa-remove"></span> Close
+                                                <button type="submit" class="btn btn-secondary">Create Organization</button>
+                                                <button class="btn btn-danger organizationFormToggle"><span class="fa fa-fw fa-remove"></span> Close
                                                 </button>
                                             </div>
                                         </div>
@@ -129,37 +94,21 @@ require 'include/header.php';
                     <br />
 
                     <div class="table-responsive">
-                        <table class='table table-bordered table-striped' id="clubs">
+                        <table class='table table-bordered table-striped' id="organizations">
                             <thead>
                             <tr>
-                                <th>Club Name</th>
-                                <th>Abbreviation</th>
-                                <th>Track Service</th>
-                                <th>Members</th>
+                                <th>Organization Name</th>
                                 <th>Actions</th>
                             </tr>
                             </thead>
                             <tbody>
                             <?php
 
-                            $clubs = getClubs($conn, $graduatingYears);
+                            $organizations = getOrganizations($conn);
+                            $organizationRowTemplate = $mustache->loadTemplate('organizationRow');
 
-                            foreach ($clubs as $club) { ?>
-                                <tr id="<?php echo $club->id; ?>">
-                                    <td><?php echo $club->name; ?></td>
-                                    <td><?php echo $club->abbreviation; ?></td>
-                                    <td><?php echo $club->trackService ? 'Yes' : 'No'; ?></td>
-                                    <td><?php echo $club->members; ?></td>
-                                    <td>
-                                        <a class="btn btn-primary btn-sm" href='manageClub.php?clubID=<?php echo $club->id; ?>'>
-                                            <i class="fa fa-fw fa-pencil"></i>
-                                        </a>
-                                        <button class="btn btn-danger btn-sm deleteClub">
-                                            <i class="fa fa-fw fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <?php
+                            foreach ($organizations as $organization) {
+                                echo $organizationRowTemplate->render($organization);
                             } ?>
                             </tbody>
                         </table>
@@ -271,6 +220,7 @@ require 'include/header.php';
     <script src="/js/admin.js"></script>
 
     <script>
+        var organizationRowTpl = "<?php echo getTemplateStr('organizationRow'); ?>";
         var adminRowTpl = "<?php echo getTemplateStr('adminRow'); ?>";
     </script>
 

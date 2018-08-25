@@ -1,12 +1,12 @@
 $(document).ready(function() {
 
-	// manage clubs
-	var clubsContainer = $('#clubs');
-	var clubs = clubsContainer.DataTable({
+	// manage organizations
+	var organizationsContainer = $('#organizations');
+	var organizations = organizationsContainer.DataTable({
 		'order': [[0, 'asc']]
 	});
-	$('.clubFormToggle').click(function(e) {
-		$('.clubForm').slideToggle();
+	$('.organizationFormToggle').click(function(e) {
+		$('.organizationForm').slideToggle();
 		e.preventDefault();
 	});
 
@@ -52,17 +52,14 @@ $(document).ready(function() {
         }, 'json');
     });
 
-	var clubForm = $('#createClub');
+	var organizationForm = $('#createClub');
 
-	// create club
-	clubForm.submit(function(e) {
+	// create organization
+	organizationForm.submit(function(e) {
 		$('.form-control').removeClass('is-invalid').removeClass('is-valid');
 		$('.invalid-feedback, .text-danger, .text-success').remove();
 		var formData = {
-			'clubName': clubForm.find('input[name=clubName]').val(),
-            'abbreviation': clubForm.find('input[name=abbreviation]').val(),
-			'organizationType': clubForm.find('#organizationType').val(),
-            'trackService': clubForm.find('input[name=trackService]').is(':checked'),
+			'organizationName': organizationForm.find('input[name=organizationName]').val(),
 			'action': 'add'
 		};
 		$.ajax({
@@ -74,42 +71,29 @@ $(document).ready(function() {
 			})
 			.done(function(data) {
 				if(!data.success) {
-					if(data.errors.clubName) {
-						$('#clubName-group').find('.form-control').addClass('is-invalid').parent().append('<div class="invalid-feedback">' + data.errors.clubName + '</div>');
+					if(data.errors.organizationName) {
+						$('#organizationName-group').find('.form-control').addClass('is-invalid').parent().append('<div class="invalid-feedback">' + data.errors.organizationName + '</div>');
 					}
-					if(data.errors.abbreviation) {
-						$('#abbreviation-group').find('.form-control').addClass('is-invalid').parent().append('<div class="invalid-feedback">' + data.errors.abbreviation + '</div>')
-					}
-                    if(data.errors.organizationType) {
-                        $('#organizationType-group').find('.form-control').addClass('is-invalid').parent().append('<div class="invalid-feedback">' + data.errors.organizationType + '</div>')
-                    }
 				} else {
-					$('#clubName-group').find('.form-control').addClass('is-valid').parent().append('<div class="invalid-feedback">Club successfully created!</div>');
+					$('#organizationName-group').find('.form-control').addClass('is-valid').parent().append('<div class="invalid-feedback">Club successfully created!</div>');
 
-					clubForm.find('input').val('');
-					clubForm.find('input[type=checkbox]').attr('checked', false);
+					organizationForm.find('input').val('');
+					organizationForm.find('input[type=checkbox]').attr('checked', false);
 
-					var row = clubs.row.add([
-						data.clubName,
-                        data.abbreviation,
-                        data.trackService,
-                        0,
-						'<a class="btn btn-primary btn-sm" href="/manageClub.php?clubID=' + data.clubID + '"><i class="fa fa-fw fa-pencil"></i></a> ' +
-						'<btn class="btn btn-danger btn-sm deleteClub"><i class="fa fa-fw fa-trash"></i></btn>'
-					]).draw().node();
-					$(row).attr('id', data.clubID);
+					var row = organizations.row.add( $(Mustache.to_html(organizationRowTpl, data))[0] ).draw().node();
+					$(row).attr('id', data.organizationID);
 				}
 			});
 		e.preventDefault();
 	});
 
-	// delete a club
-	clubsContainer.on('click', '.deleteClub', function() {
-		if(confirm("Are you sure you want to delete this club?")) {
+	// delete an organization
+	organizationsContainer.on('click', '.deleteClub', function() {
+		if(confirm("Are you sure you want to delete this organization?")) {
 			$('.text-success').remove();
 			$('.text-danger').remove();
 			var formData = {
-				'clubID': $(this).closest('tr').attr('id'),
+				'organizationID': $(this).closest('tr').attr('id'),
 				'action': 'remove'
 			};
 			$.ajax({
@@ -122,10 +106,10 @@ $(document).ready(function() {
 				.done(function(data) {
 					if(!data.success) {
 						if(data.errors.error) {
-							clubsContainer.before('<p class="text-danger">' + data.errors.error + '</p>');
+							organizationsContainer.before('<p class="text-danger">' + data.errors.error + '</p>');
 						}
 					} else {
-						clubs.row( $('[id="' + data.clubID + '"]') ).remove().draw();
+						organizations.row( $('[id="' + data.organizationID + '"]') ).remove().draw();
 					}
 				});
 			event.preventDefault();
@@ -139,9 +123,9 @@ $(document).ready(function() {
     email.autocomplete({
         // noCache: true,
         serviceUrl: '/handlers/autofill.php',
-    		params: {
-    			'type': 'admin'
-    		},
+        params: {
+            'type': 'admin'
+        },
         type: 'POST',
         onSelect: function (suggestion) {
             var data = suggestion.data;

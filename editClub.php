@@ -21,9 +21,9 @@ $clubInfo = getClubInfo($conn, $clubID);
 $clubName = $clubInfo->name;
 $abbreviation = $clubInfo->abbreviation;
 $trackService = $clubInfo->trackService;
-$organizationType = $clubInfo->type;
+$clubType = $clubInfo->type;
 
-$organizationTypes = getOrganizationTypes();
+$clubTypes = getClubTypes();
 
 $title = 'Edit Club Info';
 
@@ -36,7 +36,7 @@ require 'include/header.php';
             <div class="card">
                 <div class="card-body">
                     <button class="btn btn-secondary" onclick="window.history.back();">
-                        <span class="fa fa-fw fa-arrow-left"></span> Back to Admin Dashboard
+                        <span class="fa fa-fw fa-arrow-left"></span> Back to Club
                     </button>
                     <br /><br />
                     <form class='form-horizontal'>
@@ -60,16 +60,16 @@ require 'include/header.php';
                                        id="clubName" name="abbreviation">
                             </div>
                         </div>
-                        <div class='form-group row' id='organizationType-group'>
+                        <div class='form-group row' id='clubType-group'>
                             <div class='col-sm-3 control-label'>
-                                <label for="organizationType">Organization Type:</label>
+                                <label for="clubType">Club Type:</label>
                             </div>
                             <div class='col-sm-9'>
-                                <select class="form-control" id="organizationType" name='organizationType'>
-                                    <option value="">Please select an organization type</option>
+                                <select class="form-control" id="clubType" name='clubType'>
+                                    <option value="">Please select an club type</option>
                                     <?php
-                                    foreach ($organizationTypes as $type) {
-                                        echo "<option value='$type' " . ($type == $organizationType ? 'selected' : "") . ">$type</option>";
+                                    foreach ($clubTypes as $type) {
+                                        echo "<option value='$type' " . ($type == $clubType ? 'selected' : "") . ">$type</option>";
                                     } ?>
                                 </select>
                             </div>

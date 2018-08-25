@@ -31,7 +31,7 @@ function getMemberInfo(mysqli $conn, $memberID) {
 function getOfficerInfo(mysqli $conn, $clubOfficerID) {
 	$out = false;
 	$stmt = $conn->prepare(
-		"SELECT m.memberID, m.firstName, m.lastName, m.email, m.graduating, cm.position
+		"SELECT m.memberID, m.organizationId, m.firstName, m.lastName, m.email, m.graduating, cm.position
 			FROM members AS m
 				JOIN clubMembers AS cm
 					ON m.memberID = cm.memberID
@@ -39,10 +39,11 @@ function getOfficerInfo(mysqli $conn, $clubOfficerID) {
 	$stmt->bind_param("i", $clubOfficerID);
 	$stmt->execute();
 	$stmt->store_result();
-	$stmt->bind_result($memberID, $firstName, $lastName, $email, $graduating, $position);
+	$stmt->bind_result($memberID, $organizationID, $firstName, $lastName, $email, $graduating, $position);
 	while($stmt->fetch()) {
 		$out = [
 		    'memberID' => $memberID,
+		    'organizationID' => $organizationID,
 		    'firstName' => e($firstName),
 		    'lastName' => e($lastName),
             'email' => e($email),
@@ -67,20 +68,20 @@ function getMeetingInfo(mysqli $conn, $meetingID) {
 }
 
 function getClubInfo(mysqli $conn, $clubID) {
-	$stmt = $conn->prepare('SELECT clubName, abbreviation, trackService, organizationType FROM clubs WHERE clubID = ?');
+	$stmt = $conn->prepare('SELECT clubName, abbreviation, trackService, clubType, organizationId FROM clubs WHERE clubID = ?');
 	$stmt->bind_param('i', $clubID);
 	$stmt->execute();
 	$stmt->store_result();
-	$stmt->bind_result($clubName, $abbreviation, $trackService, $organizationType);
+	$stmt->bind_result($clubName, $abbreviation, $trackService, $clubType, $organizationID);
 	while($stmt->fetch()) {
-		return new Club($clubID, $clubName, null, $abbreviation, $trackService, $organizationType);
+		return new Club($clubID, $clubName, null, $abbreviation, $trackService, $clubType, $organizationID);
 	}
 	return false;
 }
 
 function getClubFromMeetingID(mysqli $conn, $meetingID) {
     $stmt = $conn->prepare(
-        'SELECT c.clubID, c.clubName, c.abbreviation, c.trackService, c.organizationType
+        'SELECT c.clubID, c.clubName, c.abbreviation, c.trackService, c.clubType, c.organizationId
 			FROM clubs AS c
 				JOIN meetings AS m
 					ON c.clubID = m.clubID
@@ -88,9 +89,9 @@ function getClubFromMeetingID(mysqli $conn, $meetingID) {
     $stmt->bind_param('i', $meetingID);
     $stmt->execute();
     $stmt->store_result();
-    $stmt->bind_result($clubID, $clubName, $abbreviation, $trackService, $type);
+    $stmt->bind_result($clubID, $clubName, $abbreviation, $trackService, $type, $organizationID);
     while($stmt->fetch()) {
-        return new Club($clubID, $clubName, null, $abbreviation, $trackService, $type);
+        return new Club($clubID, $clubName, null, $abbreviation, $trackService, $type, $organizationID);
     }
     return false;
 }
@@ -137,6 +138,19 @@ function getGuidMeta(mysqli $conn, $guid) {
             'meetingID' => $meetingID,
             'officerID' => $officerID
         ];
+    }
+    return $out;
+}
+
+function getOrganizationInfo(mysqli $conn, $organizationId) {
+    $out = false;
+    $stmt = $conn->prepare('SELECT organizationName, abbreviation, adviserDomain, studentDomain FROM organizations WHERE organizationID = ?');
+    $stmt->bind_param('i', $organizationId);
+    $stmt->execute();
+    $stmt->store_result();
+    $stmt->bind_result($organizationName, $abbreviation, $adviserDomain, $studentDomain);
+    while($stmt->fetch()) {
+        $out = new Organization($organizationId, $organizationName, $abbreviation, $adviserDomain, $studentDomain);
     }
     return $out;
 }
@@ -281,7 +295,7 @@ function getMeetingsMemberMissed(mysqli $conn, $memberID, $clubID) {
 	return $meetings;
 }
 
-function getClubs(mysqli $conn, $graduatingYears) {
+function getClubs(mysqli $conn, $organizationId, $graduatingYears) {
 	$clubs = array();
 	$stmt = $conn->prepare(
 		"SELECT c.clubID, c.clubName, c.abbreviation, c.trackService, IFNULL(cm.clubMemberCount, 0) 
@@ -293,8 +307,9 @@ function getClubs(mysqli $conn, $graduatingYears) {
     			                ON cm.memberID = m.memberID
                         WHERE m.graduating >= ?
                         GROUP BY clubID
-                ) cm ON (c.clubID = cm.clubID)");
-	$stmt->bind_param('i', $graduatingYears['senior']);
+                ) cm ON (c.clubID = cm.clubID)
+            WHERE c.organizationId = ?");
+	$stmt->bind_param('ii', $graduatingYears['senior'], $organizationId);
 	$stmt->execute();
 	$stmt->store_result();
 	$stmt->bind_result($clubID, $clubName, $abbreviation, $trackService, $memberCount);
@@ -487,7 +502,21 @@ function getAdvisers(mysqli $conn, $clubID) {
     while($stmt->fetch()) {
         $officers[] = new Member($adviserID, $firstName, $lastName, $email);
     }
+    $stmt->close();
     return $officers;
+}
+
+function getOrganizations(mysqli $conn) {
+    $organizations = array();
+    $stmt = $conn->prepare("SELECT organizationID, organizationName, abbreviation, adviserDomain, studentDomain FROM organizations");
+    $stmt->execute();
+    $stmt->store_result();
+    $stmt->bind_result($organizationID, $organizationName, $abbreviation, $adviserDomain, $studentDomain);
+    while($stmt->fetch()) {
+        $organizations[] = new Organization($organizationID, $organizationName, $abbreviation, $adviserDomain, $studentDomain);
+    }
+    $stmt->close();
+    return $organizations;
 }
 
 
@@ -622,7 +651,7 @@ function createServiceEntry(mysqli $conn, $ent) {
 }
 
 function createClub(mysqli $conn, $clubName, $abbreviation, $type, $trackService) {
-    $stmt = $conn->prepare("INSERT INTO clubs (clubName, abbreviation, organizationType, trackService) VALUES (?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO clubs (clubName, abbreviation, clubType, trackService) VALUES (?, ?, ?, ?)");
     $stmt->bind_param("sssi", $clubName, $abbreviation, $type, $trackService);
     $stmt->execute();
     $id = $stmt->insert_id;
@@ -676,6 +705,15 @@ function addAdviser(mysqli $conn, $clubID, $firstName, $lastName, $email) {
     return $adviserID;
 }
 
+function createOrganization(mysqli $conn, $organizationName, $abbreviation, $adviserDomain, $studentDomain) {
+    $stmt = $conn->prepare("INSERT INTO organizations (organizationName, abbreviation, adviserDomain, studentDomain) VALUES(?, ?, ?, ?)");
+    $stmt->bind_param('s', $organizationName, $abbreviation, $adviserDomain, $studentDomain);
+    $stmt->execute();
+    $id = $stmt->insert_id;
+    $stmt->close();
+    return $id;
+}
+
 
 
 // update data in the DB
@@ -687,7 +725,7 @@ function setGuidTimestamp(mysqli $conn, $guid) {
 }
 
 function updateClub(mysqli $conn, $clubID, $clubName, $abbreviation, $type, $trackService) {
-	$stmt = $conn->prepare('UPDATE clubs SET clubName = ?, abbreviation = ?, trackService = ?, organizationType = ? WHERE clubID = ?');
+	$stmt = $conn->prepare('UPDATE clubs SET clubName = ?, abbreviation = ?, trackService = ?, clubType = ? WHERE clubID = ?');
 	$stmt->bind_param('ssisi', $clubName, $abbreviation, $trackService, $type, $clubID);
 	$stmt->execute();
 	$stmt->close();
@@ -771,6 +809,13 @@ function resetMemberPassword(mysqli $conn, $memberID) {
     $password = password_hash('temp', PASSWORD_BCRYPT);
     $stmt = $conn->prepare('UPDATE members SET password = ? WHERE memberID = ?');
     $stmt->bind_param('si', $password, $memberID);
+    $stmt->execute();
+    $stmt->close();
+}
+
+function updateOrganization(mysqli $conn, Organization $organization) {
+    $stmt = $conn->prepare('UPDATE organizations SET organizationName = ? WHERE organizationID = ?');
+    $stmt->bind_param('si', $organization->name, $organization->id);
     $stmt->execute();
     $stmt->close();
 }
@@ -866,6 +911,13 @@ function removeMember(mysqli $conn, $memberID, $clubID) {
 function removeServiceEntry(mysqli $conn, $serviceEntryID) {
     $stmt = $conn->prepare('DELETE FROM serviceEntries WHERE serviceEntryID = ?');
     $stmt->bind_param('i', $serviceEntryID);
+    $stmt->execute();
+    $stmt->close();
+}
+
+function deleteOrganization(mysqli $conn, $organizationId) {
+    $stmt = $conn->prepare('DELETE FROM organizations WHERE organizationID = ?');
+    $stmt->bind_param('i', $organizationId);
     $stmt->execute();
     $stmt->close();
 }
@@ -990,7 +1042,7 @@ function getOfficerPieChartStats(mysqli $conn, $meetingID) {
 function calcGraduatingYears() {
     $month = date('n');
     $year = date('Y');
-    if($month > 8) {
+    if($month > 7) {
         return array(
             'senior' => $year + 1,
             'junior' => $year + 2,
@@ -1007,7 +1059,7 @@ function calcGraduatingYears() {
     }
 }
 
-function getOrganizationTypes() {
+function getClubTypes() {
     return ['Club', 'Class'];
 }
 

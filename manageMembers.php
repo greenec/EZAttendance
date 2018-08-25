@@ -176,6 +176,7 @@ $allMembers = getClubMembers($conn, $clubID, $graduatingYears, $clubInfo->trackS
     <script>
         var graduatingYearData = <?php echo json_encode(array_flip($graduatingYears)); ?>;
         var memberRowTpl = "<?php echo getTemplateStr('clubMemberRow'); ?>";
+        var organizationID = <?php echo $clubInfo->organizationID; ?>;
     </script>
 
     <script src="/js/manageMembers.js"></script>

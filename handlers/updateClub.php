@@ -16,19 +16,19 @@ if(isset($_SESSION['loggedin']) && $_SESSION['role'] == 'Admin') {
     die();
 }
 
-$organizationTypes = getOrganizationTypes();
+$clubTypes = getClubTypes();
 
 $action = isset($_POST['action']) ? $_POST['action'] : '';
 $clubID = isset($_POST['clubID']) ? $_POST['clubID'] : '';
 $clubName = isset($_POST['clubName']) ? $_POST['clubName'] : '';
 $abbreviation = isset($_POST['abbreviation']) ? $_POST['abbreviation'] : '';
-$type = isset($_POST['organizationType']) ? $_POST['organizationType'] : '';
+$type = isset($_POST['clubType']) ? $_POST['clubType'] : '';
 $trackService = isset($_POST['trackService']) ? $_POST['trackService'] == 'true' : false;
 
 $clubInfo = getClubInfo($conn, $clubID);
 
 // initialize JSON variables
-$errors = validate($conn, $clubInfo, $clubName, $abbreviation, $type, $organizationTypes, $action);
+$errors = validate($conn, $clubInfo, $clubName, $abbreviation, $type, $clubTypes, $action);
 $data = array();
 
 if(empty($errors)) {
@@ -56,7 +56,7 @@ if(empty($errors)) {
 
 echo json_encode($data);
 
-function validate(mysqli $conn, $clubInfo, $clubName, $abbreviation, $type, $organizationTypes, $action) {
+function validate(mysqli $conn, $clubInfo, $clubName, $abbreviation, $type, $clubTypes, $action) {
     $errors = array();
     if($action == 'add' || $action == 'update') {
         if(empty($clubName)) {
@@ -71,8 +71,8 @@ function validate(mysqli $conn, $clubInfo, $clubName, $abbreviation, $type, $org
         if(strlen($abbreviation) > 10) {
             $errors["abbreviation"] = "Club abbreviation cannot exceed 10 characters.";
         }
-        if(!in_array($type, $organizationTypes)) {
-            $errors['organizationType'] = 'Please select a valid organization type.';
+        if(!in_array($type, $clubTypes)) {
+            $errors['clubType'] = 'Please select a valid club type.';
         }
     }
     if($action == 'remove') {

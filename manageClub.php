@@ -30,7 +30,7 @@ require 'include/header.php';
             <div class="card">
                 <div class="card-body">
                     <button class="btn btn-secondary" onclick="window.history.back();">
-                        <span class="fa fa-fw fa-arrow-left"></span> Back to Dashboard
+                        <span class="fa fa-fw fa-arrow-left"></span> Back to Organization
                     </button>
                     <a href="/editClub.php?clubID=<?php echo $clubID; ?>" class="btn btn-primary">
                         <span class="fa fa-fw fa-cog"></span> Club Settings
@@ -356,6 +356,7 @@ require 'include/header.php';
 
     <script>
         var adviserRowTpl = "<?php echo getTemplateStr('adviserRow'); ?>";
+        var organizationID = <?php echo $clubInfo->organizationID; ?>;
     </script>
 
     </body>

@@ -105,7 +105,7 @@ $(document).ready(function() {
         e.preventDefault();
     });
 
-	// remove student if the organization type is 'Class'
+	// remove student if the club type is 'Class'
     missingMembersTable.on('click', '.removeMember', function(e) {
     	var row = $(this).closest('tr');
     	var name = row.find('td:eq(0)').text() + ' ' + row.find('td:eq(1)').text();
@@ -141,6 +141,9 @@ $(document).ready(function() {
         // noCache: true,
         serviceUrl: '/handlers/autofill.php',
         type: 'POST',
+        params: {
+            'organizationID': organizationID
+        },
         onSelect: function (suggestion) {
             var data = suggestion.data;
             email.val(data.email);
