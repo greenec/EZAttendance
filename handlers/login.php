@@ -39,12 +39,12 @@ if(empty($errors)) {
             new Session($conn);
             $_SESSION["loggedin"] = true;
             $_SESSION["id"] = $result['memberID'];
-            $_SESSION['organizationID'] = $result['organizationID'];
 
             if($role == 'admin') {
                 $_SESSION['role'] = 'Admin';
             } else {
                 $_SESSION['role'] = 'Officer';
+                $_SESSION['organizationID'] = $result['organizationID'];
             }
         } else {
             $errors['error'] = 'Wrong password.';

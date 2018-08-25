@@ -31,7 +31,7 @@ function getMemberInfo(mysqli $conn, $memberID) {
 function getOfficerInfo(mysqli $conn, $clubOfficerID) {
 	$out = false;
 	$stmt = $conn->prepare(
-		"SELECT m.memberID, m.firstName, m.lastName, m.email, m.graduating, cm.position
+		"SELECT m.memberID, m.organizationId, m.firstName, m.lastName, m.email, m.graduating, cm.position
 			FROM members AS m
 				JOIN clubMembers AS cm
 					ON m.memberID = cm.memberID
@@ -39,10 +39,11 @@ function getOfficerInfo(mysqli $conn, $clubOfficerID) {
 	$stmt->bind_param("i", $clubOfficerID);
 	$stmt->execute();
 	$stmt->store_result();
-	$stmt->bind_result($memberID, $firstName, $lastName, $email, $graduating, $position);
+	$stmt->bind_result($memberID, $organizationID, $firstName, $lastName, $email, $graduating, $position);
 	while($stmt->fetch()) {
 		$out = [
 		    'memberID' => $memberID,
+		    'organizationID' => $organizationID,
 		    'firstName' => e($firstName),
 		    'lastName' => e($lastName),
             'email' => e($email),
@@ -80,7 +81,7 @@ function getClubInfo(mysqli $conn, $clubID) {
 
 function getClubFromMeetingID(mysqli $conn, $meetingID) {
     $stmt = $conn->prepare(
-        'SELECT c.clubID, c.clubName, c.abbreviation, c.trackService, c.clubType
+        'SELECT c.clubID, c.clubName, c.abbreviation, c.trackService, c.clubType, c.organizationId
 			FROM clubs AS c
 				JOIN meetings AS m
 					ON c.clubID = m.clubID
@@ -88,9 +89,9 @@ function getClubFromMeetingID(mysqli $conn, $meetingID) {
     $stmt->bind_param('i', $meetingID);
     $stmt->execute();
     $stmt->store_result();
-    $stmt->bind_result($clubID, $clubName, $abbreviation, $trackService, $type);
+    $stmt->bind_result($clubID, $clubName, $abbreviation, $trackService, $type, $organizationID);
     while($stmt->fetch()) {
-        return new Club($clubID, $clubName, null, $abbreviation, $trackService, $type);
+        return new Club($clubID, $clubName, null, $abbreviation, $trackService, $type, $organizationID);
     }
     return false;
 }
