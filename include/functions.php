@@ -307,8 +307,9 @@ function getClubs(mysqli $conn, $organizationId, $graduatingYears) {
     			                ON cm.memberID = m.memberID
                         WHERE m.graduating >= ?
                         GROUP BY clubID
-                ) cm ON (c.clubID = cm.clubID)");
-	$stmt->bind_param('i', $graduatingYears['senior']);
+                ) cm ON (c.clubID = cm.clubID)
+            WHERE c.organizationId = ?");
+	$stmt->bind_param('ii', $graduatingYears['senior'], $organizationId);
 	$stmt->execute();
 	$stmt->store_result();
 	$stmt->bind_result($clubID, $clubName, $abbreviation, $trackService, $memberCount);
