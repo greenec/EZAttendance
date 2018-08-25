@@ -72,7 +72,7 @@ function validate(mysqli $conn, $clubInfo, $clubName, $abbreviation, $type, $clu
             $errors["abbreviation"] = "Club abbreviation cannot exceed 10 characters.";
         }
         if(!in_array($type, $clubTypes)) {
-            $errors['clubType'] = 'Please select a valid organization type.';
+            $errors['clubType'] = 'Please select a valid club type.';
         }
     }
     if($action == 'remove') {

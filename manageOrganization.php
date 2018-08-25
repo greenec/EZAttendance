@@ -75,12 +75,12 @@ require 'include/header.php';
                                         </div>
                                         <div class='form-group row' id='clubType-group'>
                                             <div class='col-sm-3 control-label'>
-                                                <label for="clubType">Organization Type:</label>
+                                                <label for="clubType">Club Type:</label>
                                             </div>
                                             <div class='col-sm-9'>
                                                 <select class="form-control" id="clubType"
                                                         name='clubType'>
-                                                    <option value="">Please select an organization type</option>
+                                                    <option value="">Please select an club type</option>
                                                     <?php
                                                     foreach ($clubTypes as $type) {
                                                         echo "<option value='$type'>$type</option>";
