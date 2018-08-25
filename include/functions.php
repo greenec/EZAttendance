@@ -68,13 +68,13 @@ function getMeetingInfo(mysqli $conn, $meetingID) {
 }
 
 function getClubInfo(mysqli $conn, $clubID) {
-	$stmt = $conn->prepare('SELECT clubName, abbreviation, trackService, clubType FROM clubs WHERE clubID = ?');
+	$stmt = $conn->prepare('SELECT clubName, abbreviation, trackService, clubType, organizationId FROM clubs WHERE clubID = ?');
 	$stmt->bind_param('i', $clubID);
 	$stmt->execute();
 	$stmt->store_result();
-	$stmt->bind_result($clubName, $abbreviation, $trackService, $clubType);
+	$stmt->bind_result($clubName, $abbreviation, $trackService, $clubType, $organizationID);
 	while($stmt->fetch()) {
-		return new Club($clubID, $clubName, null, $abbreviation, $trackService, $clubType);
+		return new Club($clubID, $clubName, null, $abbreviation, $trackService, $clubType, $organizationID);
 	}
 	return false;
 }
