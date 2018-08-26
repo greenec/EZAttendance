@@ -603,11 +603,11 @@ function createMember(mysqli $conn, $organizationId, $graduatingYears, $firstNam
     return $memberID;
 }
 
-function createAdviser(mysqli $conn, $firstName, $lastName, $email) {
+function createAdviser(mysqli $conn, $organizationID, $firstName, $lastName, $email) {
     $memberID = getTeacherIDByEmail($conn, $email);
     if(!$memberID) {
-        $stmt = $conn->prepare("INSERT INTO members (email, firstName, lastName, graduating) VALUES (?, ?, ?, 0)");
-        $stmt->bind_param("sss", $email, $firstName, $lastName);
+        $stmt = $conn->prepare("INSERT INTO members (organizationId, email, firstName, lastName, graduating) VALUES (?, ?, ?, ?, 0)");
+        $stmt->bind_param("isss", $organizationID, $email, $firstName, $lastName);
         $stmt->execute();
         $memberID = $stmt->insert_id;
     }
@@ -668,8 +668,8 @@ function createMeeting(mysqli $conn, $clubID, $meetingName, $meetingDate) {
     return $id;
 }
 
-function addOfficer(mysqli $conn, $graduatingYears, $clubID, $firstName, $lastName, $email, $position, $graduating) {
-    $officerID = createMember($conn, $graduatingYears, $firstName, $lastName, $email, $graduating);
+function addOfficer(mysqli $conn, $organizationID, $graduatingYears, $clubID, $firstName, $lastName, $email, $position, $graduating) {
+    $officerID = createMember($conn, $organizationID, $graduatingYears, $firstName, $lastName, $email, $graduating);
 
     if(memberPasswordIsNull($conn, $officerID)) {
         resetMemberPassword($conn, $officerID);
@@ -687,8 +687,8 @@ function addOfficer(mysqli $conn, $graduatingYears, $clubID, $firstName, $lastNa
     return $clubMemberID;
 }
 
-function addAdviser(mysqli $conn, $clubID, $firstName, $lastName, $email) {
-    $adviserID = createAdviser($conn, $firstName, $lastName, $email);
+function addAdviser(mysqli $conn, $organizationID, $clubID, $firstName, $lastName, $email) {
+    $adviserID = createAdviser($conn, $organizationID, $firstName, $lastName, $email);
 
     if(memberPasswordIsNull($conn, $adviserID)) {
         resetMemberPassword($conn, $adviserID);
