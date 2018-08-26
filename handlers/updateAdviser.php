@@ -22,7 +22,11 @@ $clubID = isset($_POST['clubID']) ? $_POST['clubID'] : '';
 $adviserID = isset($_POST['adviserID']) ? $_POST['adviserID'] : '';
 $firstName = isset($_POST['firstName']) ? trim($_POST['firstName']) : '';
 $lastName = isset($_POST['lastName']) ? trim($_POST['lastName']) : '';
-$email = isset($_POST['email']) ? cleanAdviserEmail($_POST['email']) : '';
+
+// pull organization info and clean adviser email
+$clubInfo = getClubInfo($conn, $clubID);
+$organizationInfo = getOrganizationInfo($conn, $clubInfo->organizationID);
+$email = isset($_POST['email']) ? cleanDistrictEmail($_POST['email'], $organizationInfo->adviserDomain) : '';
 
 // initialize JSON variables
 $errors = validate($conn, $firstName, $lastName, $email, $action);
@@ -73,7 +77,7 @@ function validate(mysqli $conn, $firstName, $lastName, $email, $action) {
         if(strlen($lastName) > 50) {
             $errors["lastName"] = "Adviser last name cannot exceed 50 characters.";
         }
-        if(empty($email) || $email == '@eastonsd.org') {
+        if(empty($email)) {
             $errors["email"] = "No adviser email entered.";
         }
         if(strlen($email) > 100) {

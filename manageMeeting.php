@@ -17,6 +17,7 @@ if (isset($_SESSION["loggedin"]) && isset($_GET['meetingID'])) {
 
 $meetingID = isset($_GET['meetingID']) ? $_GET['meetingID'] : 0;
 $clubInfo = getClubFromMeetingID($conn, $meetingID);
+$organizationInfo = getOrganizationInfo($conn, $clubInfo->organizationID);
 
 $graduatingYears = calcGraduatingYears();
 
@@ -43,12 +44,12 @@ require 'include/header.php';
                             <br>
                             <form id='memberForm' class="form-horizontal">
                                 <div class="form-group row" id='email-group'>
-                                    <label class="control-label col-sm-3" for="email">Rover Kids Username:</label>
+                                    <label class="control-label col-sm-3" for="email">Network ID:</label>
                                     <div class="col-sm-9">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" name="email" placeholder="Enter Rover Kids username">
+                                            <input type="text" class="form-control" name="email" placeholder="Enter Network ID">
                                             <div class="input-group-append">
-                                                <span class="input-group-text" id="email-extension">@roverkids.org</span>
+                                                <span class="input-group-text" id="email-extension">@<?php echo $organizationInfo->studentDomain; ?></span>
                                             </div>
                                         </div>
                                     </div>

@@ -18,6 +18,8 @@ if (isset($_SESSION['loggedin']) && $_SESSION['role'] == 'Admin' && isset($_GET[
 $clubID = $_GET['clubID'];
 $clubInfo = getClubInfo($conn, $clubID);
 
+$organizationInfo = getOrganizationInfo($conn, $clubInfo->organizationID);
+
 $graduatingYears = calcGraduatingYears();
 
 $title = $clubInfo->abbreviation . ' Club Management';
@@ -158,7 +160,7 @@ require 'include/header.php';
                                                     <input type="text" class="form-control" name="email"
                                                            placeholder="Officer Email">
 													<div class="input-group-append">
-														<span class="input-group-text" id="email-extension">@roverkids.org</span>
+														<span class="input-group-text" id="email-extension">@<?php echo $organizationInfo->studentDomain; ?></span>
 													</div>
                                                 </div>
                                             </div>
@@ -279,7 +281,7 @@ require 'include/header.php';
                                                 <div class="input-group">
                                                     <input type="text" class="form-control" name="email" placeholder="Adviser Email">
 													<div class="input-group-append">
-														<span class="input-group-text" id="email-extension">@eastonsd.org</span>
+                                                        <span class="input-group-text" id="email-extension">@<?php echo $organizationInfo->adviserDomain; ?></span>
 													</div>
                                                 </div>
                                             </div>

@@ -29,7 +29,6 @@ if(!$authenticated) {
 
 $action = isset($_POST['action']) ? $_POST['action'] : '';
 
-$email = isset($_POST['email']) ? cleanEmail($_POST['email']) : '';
 $firstName = isset($_POST['firstName']) ? trim($_POST['firstName']) : '';
 $lastName = isset($_POST['lastName']) ? trim($_POST['lastName']) : '';
 $graduating = isset($_POST['graduatingYear']) ? $_POST['graduatingYear'] : '';
@@ -45,6 +44,9 @@ if(isset($_SESSION['loggedin'])) {
 }
 
 $clubInfo = getClubFromMeetingID($conn, $meetingID);
+$organizationInfo = getOrganizationInfo($conn, $clubInfo->organizationID);
+
+$email = isset($_POST['email']) ? cleanDistrictEmail($_POST['email'], $organizationInfo->studentDomain) : '';
 
 // initialize JSON variables
 $errors = validate($conn, $email, $firstName, $lastName, $graduating, $signInMethod, $signedInBy, $graduatingYears, $clubInfo);
@@ -89,8 +91,8 @@ function validate(mysqli $conn, $memberEmail, $memberFirstName, $memberLastName,
         }
     }
 
-	if($memberEmail == '@roverkids.org') {
-		$errors["email"] = "No email position entered.";
+	if(empty($memberEmail)) {
+		$errors["email"] = "No email entered.";
 	}
 	if(strlen($memberEmail) > 100) {
 		$errors["email"] = "Email cannot exceed 100 characters.";

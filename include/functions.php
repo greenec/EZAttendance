@@ -1064,15 +1064,12 @@ function getClubTypes() {
 }
 
 function cleanEmail($email) {
-    return explode("@", trim(strtolower($email)))[0] . '@roverkids.org';
+    return trim(strtolower($email));
 }
 
-function cleanAdviserEmail($email) {
-    return explode("@", trim(strtolower($email)))[0] . '@eastonsd.org';
-}
-
-function cleanAdminEmail($email) {
-	return explode("@", trim(strtolower($email)))[0];
+function cleanDistrictEmail($email, $domain) {
+    if(empty($email)) return $email;
+    return explode("@", trim(strtolower($email)))[0] . '@' . $domain;
 }
 
 function cleanEmailForSearch($query) {

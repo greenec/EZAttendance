@@ -28,7 +28,7 @@ $allMembers = getClubMembers($conn, $clubID, $graduatingYears);
 $header = [
     'First Name' => 'string',
     'Last Name' => 'string',
-    'Rover Kids Email' => 'string',
+    'Email' => 'string',
     'Graduating' => 'integer'
 ];
 

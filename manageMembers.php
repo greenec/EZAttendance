@@ -19,6 +19,7 @@ if (isset($_SESSION["loggedin"]) && isset($_GET['clubID'])) {
 
 $clubID = $_GET['clubID'];
 $clubInfo = getClubInfo($conn, $clubID);
+$organizationInfo = getOrganizationInfo($conn, $clubInfo->organizationID);
 
 $graduatingYears = calcGraduatingYears();
 $academicYears = getAcademicYears($conn, $clubID);
@@ -55,13 +56,13 @@ $allMembers = getClubMembers($conn, $clubID, $graduatingYears, $clubInfo->trackS
                                 <br/>
                                 <div class="form-group row" id='email-group'>
                                     <div class="control-label col-md-3">
-                                        <label for="email">Rover Kids Username:</label>
+                                        <label for="email">Network ID:</label>
                                     </div>
                                     <div class="col-md-7">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" name="email" placeholder="Enter Rover Kids username">
+                                            <input type="text" class="form-control" name="email" placeholder="Enter Network ID">
                                             <div class="input-group-append">
-                                                <span class="input-group-text" id="email-extension">@roverkids.org</span>
+                                                <span class="input-group-text" id="email-extension">@<?php $organizationInfo->studentDomain; ?></span>
                                             </div>
                                         </div>
                                     </div>

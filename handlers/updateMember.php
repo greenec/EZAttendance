@@ -24,12 +24,18 @@ $clubID = isset($_POST['clubID']) ? $_POST['clubID'] : '';
 $memberID = isset($_POST['memberID']) ? $_POST['memberID'] : '';
 $firstName = isset($_POST['firstName']) ? trim($_POST['firstName']) : '';
 $lastName = isset($_POST['lastName']) ? trim($_POST['lastName']) : '';
-$email = isset($_POST['email']) ? cleanEmail($_POST['email']) : '';
 $graduating = isset($_POST['graduating']) ? $_POST['graduating'] : '';
-
 
 $clubInfo = getClubInfo($conn, $clubID);
 
+// pull organization info and sanitize email
+if($_SESSION['role'] == 'Officer') {
+    $organizationID = $_SESSION['organizationID'];
+} else {
+    $organizationID = $clubInfo->organizationID;
+}
+$organizationInfo = getOrganizationInfo($conn, $organizationID);
+$email = isset($_POST['email']) ? cleanDistrictEmail($_POST['email'], $organizationInfo->studentDomain) : '';
 
 // initialize JSON variables
 $errors = validate($conn, $action, $firstName, $lastName, $email, $graduating, $officerID, $clubInfo);
@@ -84,7 +90,7 @@ function validate($conn, $action, $firstName, $lastName, $email, $graduating, $o
         if (strlen($lastName) > 50) {
             $errors["lastName"] = "Last name cannot exceed 50 characters.";
         }
-        if (empty($email) || $email == '@roverkids.org') {
+        if (empty($email)) {
             $errors["email"] = "Please enter an email.";
         }
         if (strlen($email) > 100) {

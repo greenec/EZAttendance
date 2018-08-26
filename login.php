@@ -37,9 +37,6 @@ require 'include/header.php';
                                     <div class="col-sm-9">
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="email" id="email" placeholder="Email">
-                                            <div class="input-group-append">
-                                                <span class="input-group-text" id="email-extension">@roverkids.org</span>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>

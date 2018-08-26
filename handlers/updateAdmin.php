@@ -40,11 +40,7 @@ $email = isset($_POST['email']) ? $_POST['email'] : '';
 $graduating = isset($_POST['graduating']) ? $_POST['graduating'] : '';
 
 if($action == 'add') {
-	if($graduating == 0) {
-		$email = cleanAdviserEmail($email);
-	} else {
-		$email = cleanEmail($email);
-	}
+    $email = cleanEmail($email);
 }
 
 // initialize JSON variables
@@ -94,7 +90,7 @@ function validate($action, $firstName, $lastName, $email) {
         if (strlen($lastName) > 50) {
             $errors["lastName"] = "Last name cannot exceed 50 characters.";
         }
-        if (empty($email) || $email == '@roverkids.org' || $email == '@eastonsd.org') {
+        if (empty($email)) {
             $errors["email"] = "Please enter an email.";
         }
         if (strlen($email) > 100) {
