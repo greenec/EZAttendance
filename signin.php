@@ -18,10 +18,11 @@ if (isGuidValid($conn, $guid)) {
 $guidMeta = getGuidMeta($conn, $guid);
 if ($guidMeta) {
     $clubInfo = getClubFromMeetingID($conn, $guidMeta['meetingID']);
+    $organizationInfo = getOrganizationInfo($conn, $clubInfo->organizationID);
 
     $_SESSION['meetingID'] = $guidMeta['meetingID'];
     $_SESSION['signedInBy'] = $guidMeta['officerID'];
-    $_SESSION['organizationID'] = $clubInfo->organizationID;
+    $_SESSION['organizationID'] = $organizationInfo->id;
 }
 
 $authenticated = isset($_SESSION['authenticated']) ? $_SESSION['authenticated'] : false;
@@ -88,14 +89,13 @@ $sock->redraw($guid);
                         <form class="form-horizontal" id='memberForm'>
                             <div class="form-group row" id='email-group'>
                                 <div class="col-md-4 control-label text-md-right">
-                                    <label for="email">Rover Kids Username:</label>
+                                    <label for="email">Network ID:</label>
                                 </div>
                                 <div class="col-md-7">
                                     <div class="input-group">
-                                        <input type="text" class="form-control" name="email"
-                                               placeholder="Enter Rover Kids username">
+                                        <input type="text" class="form-control" name="email" placeholder="Enter Network ID">
                                         <div class="input-group-append">
-                                            <span class="input-group-text" id="email-extension">@roverkids.org</span>
+                                            <span class="input-group-text" id="email-extension">@<?php echo $organizationInfo->studentDomain; ?></span>
                                         </div>
                                     </div>
                                 </div>

@@ -24,9 +24,12 @@ $clubID = isset($_POST['clubID']) ? $_POST['clubID'] : '';
 $officerID = isset($_POST['officerID']) ? $_POST['officerID'] : '';
 $firstName = isset($_POST['firstName']) ? $_POST['firstName'] : '';
 $lastName = isset($_POST['lastName']) ? $_POST['lastName'] : '';
-$email = isset($_POST['email']) ? cleanEmail($_POST['email']) : '';
 $position = isset($_POST['position']) ? $_POST['position'] : '';
 $graduating = isset($_POST['graduating']) ? $_POST['graduating'] : '';
+
+$clubInfo = getClubInfo($conn, $clubID);
+$organizationInfo = getOrganizationInfo($conn, $clubInfo->organizationID);
+$email = isset($_POST['email']) ? cleanDistrictEmail($_POST['email'], $organizationInfo->studentDomain) : '';
 
 // initialize JSON variables
 $errors = validate($conn, $graduatingYears, $firstName, $lastName, $email, $position, $graduating, $action);
@@ -79,7 +82,7 @@ function validate(mysqli $conn, $graduatingYears, $firstName, $lastName, $email,
 		if(strlen($lastName) > 50) {
 			$errors["lastName"] = "Officer last name cannot exceed 50 characters.";
 		}
-		if(empty($email)  || $email == '@roverkids.org') {
+		if(empty($email)) {
 			$errors["email"] = "No officer email entered.";
 		}
 		if(strlen($email) > 100) {

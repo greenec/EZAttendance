@@ -36,18 +36,21 @@ $query = isset($_POST['query']) ? $_POST['query'] : '';
 $type = isset($_POST['type']) ? $_POST['type'] : '';
 
 $time = microtime(true);
+
+$organizationInfo = getOrganizationInfo($conn, $organizationID);
+
 if($type == 'teacher') {
-    $suggestions = searchAdvisers($conn, $query, $organizationID);
+    $suggestions = searchAdvisers($conn, $query, $organizationInfo);
 } else if($type == 'admin') {
 	$suggestions = searchAdmins($conn, $query);
 } else {
-    $suggestions = searchMembers($conn, $query, $organizationID, $graduatingYears);
+    $suggestions = searchMembers($conn, $query, $organizationInfo, $graduatingYears);
 }
 $time = round(microtime(true) - $time, 5);
 
 echo json_encode(['suggestions' => $suggestions, 'time' => $time]);
 
-function searchMembers(mysqli $conn, $query, $organizationID, $graduatingYears) {
+function searchMembers(mysqli $conn, $query, $organizationInfo, $graduatingYears) {
 	$query = cleanEmailForSearch($query);
 	$suggestions = [];
 
@@ -56,12 +59,12 @@ function searchMembers(mysqli $conn, $query, $organizationID, $graduatingYears) 
                   FROM members
                   WHERE organizationId = ? AND email LIKE ? AND graduating >= ?
                   LIMIT 25');
-    $stmt->bind_param('isi', $organizationID, $query, $graduatingYears['senior']);
+    $stmt->bind_param('isi', $organizationInfo->id, $query, $graduatingYears['senior']);
     $stmt->execute();
     $stmt->store_result();
     $stmt->bind_result($firstName, $lastName, $email, $graduating);
     while($stmt->fetch()) {
-    	$email = str_replace('@roverkids.org', '', $email);
+    	$email = str_replace('@' . $organizationInfo->studentDomain, '', $email);
 
         $suggestions[] = [
             'value' => "$email ($firstName $lastName)",
@@ -77,17 +80,17 @@ function searchMembers(mysqli $conn, $query, $organizationID, $graduatingYears) 
     return $suggestions;
 }
 
-function searchAdvisers(mysqli $conn, $query, $organizationID) {
+function searchAdvisers(mysqli $conn, $query, $organizationInfo) {
     $query = cleanEmailForSearch($query);
     $suggestions = [];
 
     $stmt = $conn->prepare('SELECT firstName, lastName, email FROM members WHERE organizationId = ? AND email LIKE ? AND graduating = 0 LIMIT 25');
-    $stmt->bind_param('is', $organizationID, $query);
+    $stmt->bind_param('is', $organizationInfo->id, $query);
     $stmt->execute();
     $stmt->store_result();
     $stmt->bind_result($firstName, $lastName, $email);
     while($stmt->fetch()) {
-        $email = str_replace('@eastonsd.org', '', $email);
+        $email = str_replace('@' . $organizationInfo->adviserDomain, '', $email);
 
         $suggestions[] = [
             'value' => "$email ($firstName $lastName)",
@@ -112,8 +115,6 @@ function searchAdmins(mysqli $conn, $query) {
 	$stmt->store_result();
 	$stmt->bind_result($firstName, $lastName, $email, $graduating);
 	while($stmt->fetch()) {
-		$email = str_replace(['@roverkids.org', '@eastonsd.org'], '', $email);
-
 		$suggestions[] = [
 			'value' => "$email ($firstName $lastName)",
 			'data' => [
