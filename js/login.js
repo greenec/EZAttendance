@@ -4,16 +4,7 @@ $(document).ready(function() {
 	$('input').attr('disabled', $role.val() === '');
 
 	$role.on('change', function() {
-		var role = $role.val();
-
-		// TODO: admin email domain display
-		if(role === 'officer' || role === 'admin') {
-			$('#email-extension').text('@roverkids.org');
-		} else if(role === 'teacher') {
-			$('#email-extension').text('@eastonsd.org');
-		}
-
-        $('input').attr('disabled', role === '');
+        $('input').attr('disabled', $role.val() === '');
 	});
 
 	// login to the site

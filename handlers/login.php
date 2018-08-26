@@ -10,16 +10,8 @@ require "../include/functions.php";
 
 if(isset($_POST['email']) && isset($_POST['password']) && isset($_POST['role'])) {
     $role = $_POST['role'];
-    $email = $_POST['email'];
+    $email = cleanEmail($_POST['email']);
     $password = $_POST['password'];
-
-	if ($role == 'officer') {
-		$email = cleanEmail($email);
-	} else if ($role == 'teacher') {
-		$email = cleanAdviserEmail($email);
-	} else if ($role == 'admin') {
-		$email = cleanAdminEmail($email) . '%';
-	}
 } else {
 	header('Location: ../login.php');
 	die();
