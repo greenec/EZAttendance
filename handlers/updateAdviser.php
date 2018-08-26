@@ -34,7 +34,7 @@ $data = array();
 
 if(empty($errors)) {
     if($action == 'add') {
-        $id = addAdviser($conn, $clubID, $firstName, $lastName, $email);
+        $id = addAdviser($conn, $organizationInfo->id, $clubID, $firstName, $lastName, $email);
         $adviserInfo = getMemberInfo($conn, $id);
         $data["success"] = true;
         $data["firstName"] = $adviserInfo['firstName'];

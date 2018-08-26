@@ -37,7 +37,7 @@ $data = array();
 
 if(empty($errors)) {
 	if($action == 'add') {
-		$id = addOfficer($conn, $graduatingYears, $clubID, $firstName, $lastName, $email, $position, $graduating);
+		$id = addOfficer($conn, $organizationInfo->id, $graduatingYears, $clubID, $firstName, $lastName, $email, $position, $graduating);
 		$data["success"] = true;
 		$data["officerFirstName"] = e($firstName);
 		$data["officerLastName"] = e($lastName);
