@@ -43,7 +43,7 @@ $data = array();
 
 if(empty($errors)) {
 	if($action == 'add') {
-		$memberID = addMember($conn, $graudatingYears, $firstName, $lastName, $email, $graduating);
+		$memberID = addMember($conn, $organizationInfo->id, $graudatingYears, $firstName, $lastName, $email, $graduating);
 		addClubMember($conn, $memberID, $clubID);
         $data['id'] = $memberID;
         $data['clubID'] = $clubID;

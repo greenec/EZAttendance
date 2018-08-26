@@ -591,11 +591,11 @@ function officerValid(mysqli $conn, $officerID, $clubID) {
 
 
 // insert into DB (typically returns the integer ID of the row inserted)
-function addMember(mysqli $conn, $graduatingYears, $firstName, $lastName, $email, $graduating) {
+function addMember(mysqli $conn, $organizationId, $graduatingYears, $firstName, $lastName, $email, $graduating) {
     $memberID = getMemberIDByEmail($conn, $graduatingYears, $email);
     if(!$memberID) {
-        $stmt = $conn->prepare("INSERT INTO members (email, firstName, lastName, graduating) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("sssi", $email, $firstName, $lastName, $graduating);
+        $stmt = $conn->prepare("INSERT INTO members (organizationId, email, firstName, lastName, graduating) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("isssi", $organizationId, $email, $firstName, $lastName, $graduating);
         $stmt->execute();
         $memberID = $stmt->insert_id;
     }

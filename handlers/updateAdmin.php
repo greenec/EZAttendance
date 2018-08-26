@@ -52,7 +52,8 @@ if(empty($errors)) {
     	if($graduating == 0) {
     		$memberID = addTeacher($conn, $firstName, $lastName, $email);
 		} else {
-			$memberID = addMember($conn, $graudatingYears, $firstName, $lastName, $email, $graduating);
+    	    		// TODO: organization picker when creating admins
+			$memberID = addMember($conn, 1, $graudatingYears, $firstName, $lastName, $email, $graduating);
 		}
 
         addAdmin($conn, $memberID);
