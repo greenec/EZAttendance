@@ -54,7 +54,7 @@ $data = array();
 
 if(empty($errors)) {
 	if($action == 'signin') {
-        $memberID = addMember($conn, $organizationInfo->id, $graduatingYears, $firstName, $lastName, $email, $graduating);
+        $memberID = createMember($conn, $organizationInfo->id, $graduatingYears, $firstName, $lastName, $email, $graduating);
 
         if(!memberInClub($conn, $memberID, $clubInfo->id)) {
             addClubMember($conn, $memberID, $clubInfo->id);

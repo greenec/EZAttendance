@@ -591,7 +591,7 @@ function officerValid(mysqli $conn, $officerID, $clubID) {
 
 
 // insert into DB (typically returns the integer ID of the row inserted)
-function addMember(mysqli $conn, $organizationId, $graduatingYears, $firstName, $lastName, $email, $graduating) {
+function createMember(mysqli $conn, $organizationId, $graduatingYears, $firstName, $lastName, $email, $graduating) {
     $memberID = getMemberIDByEmail($conn, $graduatingYears, $email);
     if(!$memberID) {
         $stmt = $conn->prepare("INSERT INTO members (organizationId, email, firstName, lastName, graduating) VALUES (?, ?, ?, ?, ?)");
@@ -603,7 +603,7 @@ function addMember(mysqli $conn, $organizationId, $graduatingYears, $firstName, 
     return $memberID;
 }
 
-function addTeacher(mysqli $conn, $firstName, $lastName, $email) {
+function createAdviser(mysqli $conn, $firstName, $lastName, $email) {
     $memberID = getTeacherIDByEmail($conn, $email);
     if(!$memberID) {
         $stmt = $conn->prepare("INSERT INTO members (email, firstName, lastName, graduating) VALUES (?, ?, ?, 0)");
@@ -669,7 +669,7 @@ function createMeeting(mysqli $conn, $clubID, $meetingName, $meetingDate) {
 }
 
 function addOfficer(mysqli $conn, $graduatingYears, $clubID, $firstName, $lastName, $email, $position, $graduating) {
-    $officerID = addMember($conn, $graduatingYears, $firstName, $lastName, $email, $graduating);
+    $officerID = createMember($conn, $graduatingYears, $firstName, $lastName, $email, $graduating);
 
     if(memberPasswordIsNull($conn, $officerID)) {
         resetMemberPassword($conn, $officerID);
@@ -688,7 +688,7 @@ function addOfficer(mysqli $conn, $graduatingYears, $clubID, $firstName, $lastNa
 }
 
 function addAdviser(mysqli $conn, $clubID, $firstName, $lastName, $email) {
-    $adviserID = addTeacher($conn, $firstName, $lastName, $email);
+    $adviserID = createAdviser($conn, $firstName, $lastName, $email);
 
     if(memberPasswordIsNull($conn, $adviserID)) {
         resetMemberPassword($conn, $adviserID);
