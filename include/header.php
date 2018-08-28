@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title><?php echo isset($title) ? $title : 'Easton NHS'; ?></title>
+	<title><?php echo isset($title) ? $title : 'EZ Attendance'; ?></title>
 	<link rel="icon" type="image/png" href="/img/favicon.gif" />
 	<link href="/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 	<link href="/css/dataTables.bootstrap.min.css" rel="stylesheet" type="text/css">
@@ -13,8 +13,8 @@
 	<!-- Navigation -->
 	<nav class="navbar navbar-expand-md navbar-light navbar-laravel">
 		<div class="container">
-            <a href="https://eahsnhs.com/account.php" class="navbar-brand">
-                Easton NHS
+            <a href="https://ezattendance.com/account.php" class="navbar-brand">
+                EZ Attendance
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>

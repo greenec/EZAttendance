@@ -4,7 +4,7 @@ $(document).ready(function() {
 
 	/*
 	var socket;
-    var host = "wss://eahsnhs.com/socket/connect";
+    var host = "wss://ezattendance.com/socket/connect";
     try {
         socket = new WebSocket(host);
         socket.onopen = function(msg) {

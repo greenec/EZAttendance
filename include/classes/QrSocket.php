@@ -2,7 +2,7 @@
 
 class QrSocket {
     function __construct() {
-        $this->client = new WebSocket\Client("wss://eahsnhs.com/socket/connect/");
+        $this->client = new WebSocket\Client("wss://ezattendance.com/socket/connect/");
     }
 
     function redraw($guid) {
