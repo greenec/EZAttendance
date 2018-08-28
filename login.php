@@ -1,6 +1,6 @@
 <?php
 
-$title = 'Easton NHS Login';
+$title = 'EZ Attendance Login';
 
 require 'include/header.php';
 

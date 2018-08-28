@@ -3,7 +3,7 @@ $(document).ready(function() {
     var qrcode = $('#qrcode');
     var socket, guid, data;
 
-    var host = "wss://eahsnhs.com/socket/connect";
+    var host = "wss://ezattendance.com/socket/connect";
     try {
         socket = new WebSocket(host);
         socket.onopen = function(msg) {
@@ -46,7 +46,7 @@ $(document).ready(function() {
         qrcode.empty();
         size = Math.min( $(window).height(), $(window).width() ) * 0.8;
         new QRCode(qrcode[0], {
-            text: "https://eahsnhs.com/signin.php?guid=" + guid,
+            text: "https://ezattendance.com/signin.php?guid=" + guid,
             width: size,
             height: size
         });

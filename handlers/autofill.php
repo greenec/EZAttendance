@@ -26,7 +26,7 @@ if(isset($_SESSION['organizationID'])) {
 }
 
 // if the user is an admin, grab the organization ID that they post
-if($_SESSION['role'] == 'Admin') {
+if(isset($_SESSION['role']) && $_SESSION['role'] == 'Admin') {
     $organizationID = $_POST['organizationID'];
 }
 
