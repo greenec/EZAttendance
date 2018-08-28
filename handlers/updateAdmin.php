@@ -49,10 +49,10 @@ $data = array();
 
 if(empty($errors)) {
     if($action == 'add') {
-    	if($graduating == 0) {
-    		$memberID = createAdviser($conn, $firstName, $lastName, $email);
-		} else {
-    	    		// TODO: organization picker when creating admins
+        // TODO: organization picker when creating admins
+        if($graduating == 0) {
+            $memberID = createAdviser($conn, 1, $firstName, $lastName, $email);
+        } else {
 			$memberID = createMember($conn, 1, $graudatingYears, $firstName, $lastName, $email, $graduating);
 		}
 
