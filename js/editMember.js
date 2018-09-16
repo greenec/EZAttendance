@@ -12,6 +12,7 @@ $(document).ready(function() {
 		$('.form-control').removeClass('is-invalid').removeClass('is-valid');
 		$('.invalid-feedback, .text-danger, .text-success').remove();
 		var formData = {
+			'clubID': qString('clubID'),
 			'memberID': qString('memberID'),
 			'firstName': $('input[name=firstName]').val(),
 			'lastName': $('input[name=lastName]').val(),
@@ -45,6 +46,8 @@ $(document).ready(function() {
 				$('#lastName-group').find('.form-control').addClass('is-valid');
 				$('#email-group').find('.form-control').addClass('is-valid');
 				$('#graduating-group').find('.form-control').addClass('is-valid');
+
+				$('input[name=email]').val(data.email);
 
 				$('.saveChanges').before('<p class="text-success">Account successfully updated!</p>');
 			}

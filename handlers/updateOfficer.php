@@ -27,8 +27,15 @@ $lastName = isset($_POST['lastName']) ? $_POST['lastName'] : '';
 $position = isset($_POST['position']) ? $_POST['position'] : '';
 $graduating = isset($_POST['graduating']) ? $_POST['graduating'] : '';
 
-$clubInfo = getClubInfo($conn, $clubID);
-$organizationInfo = getOrganizationInfo($conn, $clubInfo->organizationID);
+if(!empty($clubID)) {
+    $clubInfo = getClubInfo($conn, $clubID);
+    $organizationID = $clubInfo->organizationID;
+} else {
+    $officerInfo = getOfficerInfo($conn, $officerID);
+    $organizationID = $officerInfo['organizationID'];
+}
+
+$organizationInfo = getOrganizationInfo($conn, $organizationID);
 $email = isset($_POST['email']) ? cleanDistrictEmail($_POST['email'], $organizationInfo->studentDomain) : '';
 
 // initialize JSON variables
@@ -38,7 +45,6 @@ $data = array();
 if(empty($errors)) {
 	if($action == 'add') {
 		$id = addOfficer($conn, $organizationInfo->id, $graduatingYears, $clubID, $firstName, $lastName, $email, $position, $graduating);
-		$data["success"] = true;
 		$data["officerFirstName"] = e($firstName);
 		$data["officerLastName"] = e($lastName);
 		$data["officerEmail"] = e($email);
@@ -48,18 +54,17 @@ if(empty($errors)) {
 	}
 	if($action == 'remove') {
 		removeOfficer($conn, $officerID);
-		$data["success"] = true;
 		$data["officerID"] = $officerID;
 	}
 	if($action == 'update') {
 		updateOfficer($conn, $officerID, $firstName, $lastName, $email, $position, $graduating);
-		$data['success'] = true;
+		$data['officerEmail'] = $email;
 	}
 	if($action == 'resetPassword') {
 	    $officerInfo = getOfficerInfo($conn, $officerID);
 	    resetMemberPassword($conn, $officerInfo['memberID']);
-	    $data['success'] = true;
     }
+    $data['success'] = true;
 } else {
 	$data["success"] = false;
 	$data["errors"] = $errors;

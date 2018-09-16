@@ -28,13 +28,7 @@ $graduating = isset($_POST['graduating']) ? $_POST['graduating'] : '';
 
 $clubInfo = getClubInfo($conn, $clubID);
 
-// pull organization info and sanitize email
-if($_SESSION['role'] == 'Officer') {
-    $organizationID = $_SESSION['organizationID'];
-} else {
-    $organizationID = $clubInfo->organizationID;
-}
-$organizationInfo = getOrganizationInfo($conn, $organizationID);
+$organizationInfo = getOrganizationInfo($conn, $clubInfo->organizationID);
 $email = isset($_POST['email']) ? cleanDistrictEmail($_POST['email'], $organizationInfo->studentDomain) : '';
 
 // initialize JSON variables
@@ -65,6 +59,7 @@ if(empty($errors)) {
     }
 	if($action == 'update') {
 		updateMember($conn, $memberID, $firstName, $lastName, $email, $graduating);
+		$data['email'] = $email;
 	}
 	$data['success'] = true;
 } else {
@@ -101,10 +96,13 @@ function validate($conn, $action, $firstName, $lastName, $email, $graduating, $o
         }
     }
 
-    if($action == 'remove') {
+    if($action == 'remove' || $action == 'update') {
         if(!officerValid($conn, $officerID, $clubInfo->id)) {
             $errors['error'] = 'You are not a valid officer in this club';
         }
+    }
+
+    if($action == 'remove') {
         if($clubInfo->type == 'Club') {
             $errors['error'] = 'You cannot delete members from a club, only from a class.';
         }

@@ -38,11 +38,13 @@ $(document).ready(function() {
 					$('#graduating-group').find('.form-control').addClass('is-invalid').parent().append('<div class="invalid-feedback">' + data.errors.officerGraduating + '</div>');
 				}
 			} else {
-				$('#firstName-group').find('.form-control').addClass('is-valid')
-				$('#lastName-group').find('.form-control').addClass('is-valid')
-				$('#email-group').find('.form-control').addClass('is-valid')
-				$('#position-group').find('.form-control').addClass('is-valid')
-				$('#graduating-group').find('.form-control').addClass('is-valid')
+				$('#firstName-group').find('.form-control').addClass('is-valid');
+				$('#lastName-group').find('.form-control').addClass('is-valid');
+				$('#email-group').find('.form-control').addClass('is-valid');
+				$('#position-group').find('.form-control').addClass('is-valid');
+				$('#graduating-group').find('.form-control').addClass('is-valid');
+
+				$('input[name=email]').val(data.officerEmail);
 
 				$('.saveChanges').before('<p class="text-success">Account successfully updated!</p>');
 			}
