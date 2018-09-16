@@ -23,9 +23,18 @@ $adviserID = isset($_POST['adviserID']) ? $_POST['adviserID'] : '';
 $firstName = isset($_POST['firstName']) ? trim($_POST['firstName']) : '';
 $lastName = isset($_POST['lastName']) ? trim($_POST['lastName']) : '';
 
-// pull organization info and clean adviser email
 $clubInfo = getClubInfo($conn, $clubID);
-$organizationInfo = getOrganizationInfo($conn, $clubInfo->organizationID);
+
+// pull organization info and clean adviser email
+if(!empty($clubID)) {
+    $clubInfo = getClubInfo($conn, $clubID);
+    $organizationID = $clubInfo->organizationID;
+} else {
+    $adviserInfo = getOfficerInfo($conn, $adviserID);
+    $organizationID = $adviserInfo['organizationID'];
+}
+
+$organizationInfo = getOrganizationInfo($conn, $organizationID);
 $email = isset($_POST['email']) ? cleanDistrictEmail($_POST['email'], $organizationInfo->adviserDomain) : '';
 
 // initialize JSON variables
@@ -36,7 +45,6 @@ if(empty($errors)) {
     if($action == 'add') {
         $id = addAdviser($conn, $organizationInfo->id, $clubID, $firstName, $lastName, $email);
         $adviserInfo = getMemberInfo($conn, $id);
-        $data["success"] = true;
         $data["firstName"] = $adviserInfo['firstName'];
         $data["lastName"] = $adviserInfo['lastName'];
         $data["email"] = $adviserInfo['email'];
@@ -44,17 +52,16 @@ if(empty($errors)) {
     }
     if($action == 'remove') {
         removeAdviser($conn, $adviserID, $clubID);
-        $data["success"] = true;
         $data["id"] = $adviserID;
     }
     if($action == 'update') {
-         updateAdviser($conn, $adviserID, $firstName, $lastName, $email);
-        $data['success'] = true;
+        updateAdviser($conn, $adviserID, $firstName, $lastName, $email);
+        $data['email'] = $email;
     }
     if($action == 'resetPassword') {
         resetMemberPassword($conn, $adviserID);
-        $data['success'] = true;
     }
+    $data['success'] = true;
 } else {
     $data["success"] = false;
     $data["errors"] = $errors;

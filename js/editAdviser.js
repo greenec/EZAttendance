@@ -30,10 +30,12 @@ $(document).ready(function() {
                         $('#email-group').find('.form-control').addClass('is-invalid').parent().append('<div class="invalid-feedback">' + data.errors.email + '</div>');
                     }
                 } else {
-                    $('#firstName-group').find('.form-control').addClass('is-valid')
-                    $('#lastName-group').find('.form-control').addClass('is-valid')
-                    $('#email-group').find('.form-control').addClass('is-valid')
-                    $('#graduating-group').find('.form-control').addClass('is-valid')
+                    $('#firstName-group').find('.form-control').addClass('is-valid');
+                    $('#lastName-group').find('.form-control').addClass('is-valid');
+                    $('#email-group').find('.form-control').addClass('is-valid');
+                    $('#graduating-group').find('.form-control').addClass('is-valid');
+
+                    $('input[name=email]').val(data.email);
 
                     $('.saveChanges').before('<p class="text-success">Account successfully updated!</p>');
                 }
