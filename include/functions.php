@@ -365,6 +365,7 @@ function getAdmins(mysqli $conn, $graduatingYears) {
 
 function getClubMembers(mysqli $conn, $clubID, $graduatingYears, $trackService = false) {
 	$members = array_fill_keys(array_keys($graduatingYears), []);
+	$yearRange = calcCurrentYearRange();
 	$stmt = $conn->prepare(
 		"SELECT m.memberID, m.firstName, m.lastName, m.email, cm.clubMemberID, m.graduating, IFNULL(ma.count, 0), se.individualHours, se.groupHours
 			FROM members AS m
@@ -375,7 +376,7 @@ function getClubMembers(mysqli $conn, $clubID, $graduatingYears, $trackService =
                         FROM meetingAttendees AS ma
                             JOIN meetings AS m
                                 ON ma.meetingID = m.meetingID
-                        WHERE m.clubID = ?
+                        WHERE m.clubID = ? AND (m.meetingDate BETWEEN ? AND ?)
                         GROUP BY memberID
 		  		) ma ON (m.memberID = ma.memberID)
                 LEFT JOIN (
@@ -387,12 +388,12 @@ function getClubMembers(mysqli $conn, $clubID, $graduatingYears, $trackService =
                       	        ON se.serviceOpportunityID = so.serviceOpportunityID
                             JOIN clubMembers AS cm
                                 ON se.clubMemberID = cm.clubMemberID
-                        WHERE cm.clubID = ?
+                        WHERE cm.clubID = ? AND (se.date BETWEEN ? AND ? )
                         GROUP BY se.clubMemberID
 		  		) se ON (cm.clubMemberID = se.clubMemberID)
 			WHERE cm.clubID = ? AND m.graduating >= ?
 			ORDER BY m.lastName");
-	$stmt->bind_param('iiii', $clubID, $clubID, $clubID, $graduatingYears['senior']);
+	$stmt->bind_param('ississii', $clubID, $yearRange['start'], $yearRange['end'], $clubID, $yearRange['start'], $yearRange['end'], $clubID, $graduatingYears['senior']);
 	$stmt->execute();
 	$stmt->store_result();
 	$stmt->bind_result($id, $firstName, $lastName, $email, $clubMemberID, $graduating, $meetingsAttended, $individualHours, $groupHours);
@@ -1043,19 +1044,35 @@ function calcGraduatingYears() {
     $month = date('n');
     $year = date('Y');
     if($month > 7) {
-        return array(
+        return [
             'senior' => $year + 1,
             'junior' => $year + 2,
             'sophomore' => $year + 3,
             'freshman' => $year + 4
-        );
+        ];
     } else {
-        return array(
+        return [
             'senior' => $year,
             'junior' => $year + 1,
             'sophomore' => $year + 2,
             'freshman' => $year + 3,
-        );
+        ];
+    }
+}
+
+function calcCurrentYearRange() {
+    $month = date('n');
+    $year = date('Y');
+    if($month > 7) {
+        return [
+            'start' => "$year-8-1",
+            'end' => ($year + 1) . "-8-1",
+        ];
+    } else {
+        return [
+            'start' => ($year - 1) . "-8-1",
+            'end' => "$year-8-1"
+        ];
     }
 }
 
