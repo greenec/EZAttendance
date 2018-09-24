@@ -37,6 +37,7 @@ $(document).ready(function ($) {
         form.find('.invalid-feedback, .text-danger, .text-success').remove();
         var formData = {
             'action': 'addOpportunity',
+            'clubID': qString('clubID'),
             'serviceName': form.find('input[name=serviceName]').val(),
             'serviceType': form.find('select[name=serviceType]').val(),
             'serviceDescription': form.find('textarea[name=serviceDescription]').val(),

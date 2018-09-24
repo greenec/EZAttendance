@@ -22,6 +22,7 @@ if(isset($_POST['query'])) {
 }
 
 $serviceOpportunity = [
+    'clubID' => isset($_POST['clubID']) ? $_POST['clubID'] : '',
     'opportunityID' => isset($_POST['opportunityID']) ? $_POST['opportunityID'] : '',
     'serviceName' => isset($_POST['serviceName']) ? trim($_POST['serviceName']) : '',
     'serviceType' => isset($_POST['serviceType']) ? $_POST['serviceType'] : '',
@@ -46,7 +47,7 @@ $data = array();
 
 if(empty($errors)) {
     if($action == 'addOpportunity') {
-        $opp = getServiceOpportunityByName($conn, $serviceOpportunity['serviceName']);
+        $opp = getServiceOpportunityByName($conn, $serviceOpportunity['clubID'], $serviceOpportunity['serviceName']);
 
 	// TODO: update opportunity info with POST data
 
@@ -54,7 +55,7 @@ if(empty($errors)) {
             $opp = createServiceOpportunity($conn, $serviceOpportunity);
         }
         $data['id'] = $opp->id;
-        $data['name'] = $opp->name;
+        $data['name'] = htmlspecialchars_decode($opp->name);
         $data['description'] = $opp->description;
         $data['contactName'] = $opp->contactName;
         $data['contactPhone'] = $opp->contactPhone;

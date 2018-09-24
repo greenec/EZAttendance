@@ -112,10 +112,10 @@ function getServiceOpportunity(mysqli $conn, $opportunityID) {
     return $out;
 }
 
-function getServiceOpportunityByName(mysqli $conn, $name) {
+function getServiceOpportunityByName(mysqli $conn, $clubID, $name) {
     $out = false;
-    $stmt = $conn->prepare('SELECT serviceOpportunityID, serviceDescription, contactName, contactPhone, serviceType FROM serviceOpportunities WHERE serviceName = ?');
-    $stmt->bind_param('s', $name);
+    $stmt = $conn->prepare('SELECT serviceOpportunityID, serviceDescription, contactName, contactPhone, serviceType FROM serviceOpportunities WHERE clubId = ? AND serviceName = ?');
+    $stmt->bind_param('is', $clubID, $name);
     $stmt->execute();
     $stmt->store_result();
     $stmt->bind_result($serviceID, $description, $contactName, $contactPhone, $serviceType);
@@ -634,8 +634,8 @@ function signinMember(mysqli $conn, $meetingID, $memberID, $signInMethod, $signe
 }
 
 function createServiceOpportunity(mysqli $conn, $opp) {
-    $stmt = $conn->prepare('INSERT INTO serviceOpportunities (serviceType, serviceName, serviceDescription, contactName, contactPhone) VALUES(?, ?, ?, ?, ?)');
-    $stmt->bind_param('sssss', $opp['serviceType'], $opp['serviceName'], $opp['description'], $opp['contactName'], $opp['contactPhone']);
+    $stmt = $conn->prepare('INSERT INTO serviceOpportunities (clubId, serviceType, serviceName, serviceDescription, contactName, contactPhone) VALUES(?, ?, ?, ?, ?, ?)');
+    $stmt->bind_param('isssss', $opp['clubID'], $opp['serviceType'], $opp['serviceName'], $opp['description'], $opp['contactName'], $opp['contactPhone']);
     $stmt->execute();
     $out = new Service($stmt->insert_id, $opp['serviceName'], $opp['description'], $opp['contactName'], $opp['contactPhone'], $opp['serviceType']);
     $stmt->close();
